@@ -76,8 +76,8 @@
     #wk-root .wk-card:hover .wk-btn { background: #234a31 !important; }
     #wk-root .wk-status { color: var(--text-muted) !important; margin: 0 !important; }
     #wk-root .wk-foot { margin-top: 14px !important; text-align: center !important; }
-    #wk-root .wk-link { color: var(--primary) !important; font-weight: 600 !important; font-size: 0.85rem !important; text-decoration: underline !important; text-underline-offset: 3px !important; }
-    #wk-root .wk-link:hover { color: var(--primary-hover) !important; }
+    #wk-root .wk-link { display: inline-block !important; color: #2d5b3e !important; background: #fff !important; border: 2px solid #2d5b3e !important; border-radius: 8px !important; padding: 10px 22px !important; font-size: 0.95rem !important; font-weight: 700 !important; text-decoration: none !important; transition: background 0.15s, color 0.15s !important; }
+    #wk-root .wk-link:hover, #wk-root .wk-link:focus-visible { background: #2d5b3e !important; color: #fff !important; }
 
     /* Walk popup: matches the walker card in the scheduler (moved to <body> on load) */
     #wk-modal { position: fixed !important; inset: 0 !important; background: rgba(15, 23, 42, 0.45) !important; display: none !important; align-items: center !important; justify-content: center !important; padding: 16px !important; z-index: 2147483000 !important; margin: 0 !important; }
