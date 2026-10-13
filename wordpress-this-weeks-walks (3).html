@@ -1,0 +1,61 @@
+<!-- CBMW This Week's Walks: paste the whole file into one WordPress "Custom HTML" block.
+     Shows the walker list from the walk scheduler, so each walk behaves exactly as it does there.
+     Place it on the Walkers Hub page: the link opens the programme inside the hub, like the Walk Programme card. -->
+<style>
+    .wk-wrap {
+        --primary: #2d5b3e;
+        --primary-hover: #234a31;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        font-family: "Google Sans", system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 4px;
+    }
+    .wk-wrap *, .wk-wrap *::before, .wk-wrap *::after { box-sizing: border-box; }
+    .wk-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin: 0 0 12px; }
+    .wk-head h2 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--primary); }
+    .wk-range { margin: 0; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; }
+    .wk-frame { display: block; width: 100%; height: 400px; border: 0; background: #fff; }
+    .wk-foot { margin-top: 16px; text-align: center; }
+    .wk-link { display: inline-block; background: var(--primary); color: #fff !important; text-decoration: none; font-weight: 600; padding: 10px 18px; border-radius: 8px; }
+    .wk-link:hover { background: var(--primary-hover); }
+    @media (max-width: 520px) { .wk-head h2 { font-size: 1.3rem; } }
+</style>
+
+<div class="wk-wrap">
+  <div class="wk-head">
+    <h2>This week's walks</h2>
+    <p class="wk-range" id="wk-range"></p>
+  </div>
+  <iframe class="wk-frame" id="wk-frame"
+          src="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker&embed=week"
+          title="This week's walks" loading="lazy"></iframe>
+  <div class="wk-foot">
+    <a class="wk-link" href="?view=programme-scheduler">Open the full walk programme &rarr;</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const ORIGIN = "https://magicstreak.github.io";
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // Week label: Sunday to Saturday
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const sun = new Date(today);
+    sun.setDate(today.getDate() - today.getDay());
+    const sat = new Date(sun);
+    sat.setDate(sun.getDate() + 6);
+    const fmt = (d) => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    document.getElementById("wk-range").textContent = `${fmt(sun)} – ${fmt(sat)}`;
+
+    // The scheduler reports its list height, so the frame fits the walks without an inner scrollbar
+    window.addEventListener("message", (e) => {
+      if (e.origin !== ORIGIN || !e.data || e.data.type !== "cbmw-week-height") return;
+      document.getElementById("wk-frame").style.height = `${Math.max(120, e.data.height)}px`;
+    });
+  })();
+</script>
