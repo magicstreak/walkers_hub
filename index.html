@@ -234,12 +234,16 @@
       const wrap = document.getElementById("hub-frame-wrap");
       Object.assign(wrap.style, {
         position: "fixed", top: "0", left: "0", right: "0", bottom: "0",
-        zIndex: "99999", background: "#fff", padding: "8px 12px", overflow: "hidden", display: "block"
+        zIndex: "99999", background: "#fff", padding: "8px 12px", boxSizing: "border-box",
+        overflow: "hidden", display: "flex", flexDirection: "column"
       });
+      // The frame fills the space left under the back link, so nothing sits below the phone's visible area
+      wrap.querySelector(".hub-back").style.flex = "0 0 auto";
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
       const frame = document.getElementById("hub-frame");
-      frame.style.height = "calc(100vh - 50px)";
+      frame.style.flex = "1 1 auto";
+      frame.style.height = "auto";
       frame.style.minHeight = "0";
       frame.style.boxShadow = "none";
       frame.src = APPS[current];
