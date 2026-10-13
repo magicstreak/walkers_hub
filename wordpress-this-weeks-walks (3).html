@@ -1,61 +1,439 @@
 <!-- CBMW This Week's Walks: paste the whole file into one WordPress "Custom HTML" block.
-     Shows the walker list from the walk scheduler, so each walk behaves exactly as it does there.
      Place it on the Walkers Hub page: the link opens the programme inside the hub, like the Walk Programme card. -->
 <style>
-    .wk-wrap {
+    /* Isolate from the WordPress theme: reset the properties themes most often override */
+    #wk-root, #wk-root *, #wk-root *::before, #wk-root *::after,
+    #wk-modal, #wk-modal *, #wk-levels, #wk-levels * {
+        box-sizing: border-box !important;
+        font-family: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+        letter-spacing: normal !important;
+        word-spacing: normal !important;
+        text-indent: 0 !important;
+        text-transform: none !important;
+        font-style: normal !important;
+        text-shadow: none !important;
+        line-height: 1.4 !important;
+        float: none !important;
+    }
+    #wk-root h2, #wk-root h3, #wk-root p, #wk-root ul, #wk-root li, #wk-root figure,
+    #wk-modal h3, #wk-modal p { margin: 0 !important; padding: 0 !important; }
+    #wk-root a, #wk-modal a { color: #2d5b3e !important; text-decoration: underline !important; background: none !important; }
+    #wk-root button, #wk-modal button {
+        appearance: none !important; -webkit-appearance: none !important; border-radius: 12px !important;
+        margin: 0 !important; min-height: 0 !important; min-width: 0 !important; width: auto !important; height: auto !important;
+        max-width: none !important; background: #fff !important; border-style: solid !important; border-width: 1px !important;
+        border-color: #e4e4e7 !important; color: #1e293b !important; font-weight: normal !important;
+    }
+    #wk-root svg { display: block; max-width: none !important; height: auto; }
+    #wk-root img { max-width: none !important; }
+
+    #wk-root {
         --primary: #2d5b3e;
         --primary-hover: #234a31;
+        --border: #e4e4e7;
         --text: #1e293b;
         --text-muted: #64748b;
-        font-family: "Google Sans", system-ui, -apple-system, sans-serif;
-        color: var(--text);
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 4px;
+        color: var(--text) !important;
+        max-width: 880px !important;
+        margin: 0 auto !important;
+        padding: 0 4px !important;
+        width: 100% !important;
+        font-size: 16px !important;
+        text-align: left !important;
     }
-    .wk-wrap *, .wk-wrap *::before, .wk-wrap *::after { box-sizing: border-box; }
-    .wk-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin: 0 0 12px; }
-    .wk-head h2 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--primary); }
-    .wk-range { margin: 0; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; }
-    .wk-frame { display: block; width: 100%; height: 400px; border: 0; background: #fff; }
-    .wk-foot { margin-top: 16px; text-align: center; }
-    .wk-link { display: inline-block; background: var(--primary); color: #fff !important; text-decoration: none; font-weight: 600; padding: 10px 18px; border-radius: 8px; }
-    .wk-link:hover { background: var(--primary-hover); }
-    @media (max-width: 520px) { .wk-head h2 { font-size: 1.3rem; } }
+    #wk-root .wk-head { display: flex !important; flex-wrap: wrap !important; align-items: baseline !important; justify-content: space-between !important; gap: 6px 16px !important; margin: 0 0 14px !important; }
+    #wk-root .wk-head h2 { font-size: 1.5rem !important; font-weight: 700 !important; color: var(--primary) !important; }
+    #wk-root .wk-range { color: var(--text-muted) !important; font-weight: 600 !important; font-size: 0.95rem !important; }
+    #wk-root .wk-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px !important; }
+    /* Card: image, title, description, meta row and a footer with a button (matches the listing style) */
+    #wk-root .wk-card {
+        display: flex !important; flex-direction: column !important; padding: 0 !important; overflow: hidden !important;
+        background: #fff !important; border: 1px solid #cfd8e3 !important; border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08) !important;
+        cursor: pointer !important; text-align: left !important; color: inherit !important; font: inherit !important;
+        transition: box-shadow 0.15s !important;
+    }
+    #wk-root .wk-card:hover { box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.28) !important; }
+    #wk-root .wk-card:focus-visible { outline: 2px solid var(--primary) !important; outline-offset: 3px !important; }
+    #wk-root .wk-img { position: relative !important; height: 170px !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
+    #wk-root .wk-img svg { position: absolute !important; inset: 0 !important; margin: auto !important; width: 60px !important; height: 60px !important; opacity: 0.5 !important; }
+    #wk-root .wk-img img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; border: 0 !important; margin: 0 !important; padding: 0 !important; }
+    #wk-root .wk-card.wk-summer .wk-img { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
+    #wk-root .wk-tag { position: absolute !important; top: 10px !important; left: 10px !important; background: #fffbeb !important; color: #713f12 !important; border-left: 5px solid #eab308 !important; font-size: 0.72rem !important; font-weight: 700 !important; padding: 3px 8px !important; border-radius: 4px !important; }
+    #wk-root .wk-body { padding: 14px 16px 12px !important; flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 8px !important; border-bottom: 1px solid #e2e8f0 !important; }
+    #wk-root .wk-title { font-weight: 700 !important; font-size: 1.05rem !important; line-height: 1.3 !important; color: #1e293b !important; }
+    #wk-root .wk-desc { font-size: 0.9rem !important; line-height: 1.45 !important; color: #334155 !important; display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+    #wk-root .wk-desc strong { font-weight: 700 !important; color: #1e293b !important; }
+    #wk-root .wk-meta { margin-top: auto !important; padding-top: 4px !important; font-size: 0.82rem !important; color: #64748b !important; font-weight: 600 !important; }
+    #wk-root .wk-foot-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; padding: 12px 16px !important; }
+    #wk-root .wk-lbl { display: block !important; font-size: 0.72rem !important; font-weight: 700 !important; color: #475569 !important; margin: 0 0 2px !important; }
+    #wk-root .wk-val { display: block !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #1e293b !important; }
+    #wk-root .wk-btn { flex: none !important; background: #2d5b3e !important; color: #fff !important; border-radius: 4px !important; padding: 10px 16px !important; font-size: 0.82rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.03em !important; }
+    #wk-root .wk-facts { margin-top: auto !important; padding-top: 6px !important; }
+    #wk-root .wk-fact { display: grid !important; grid-template-columns: 84px 1fr !important; column-gap: 6px !important; margin: 0 !important; font-size: 0.85rem !important; line-height: 1.5 !important; color: #334155 !important; }
+    #wk-root .wk-k { font-weight: 700 !important; color: #1e293b !important; }
+    #wk-root .wk-when-line { font-size: 0.98rem !important; font-weight: 700 !important; color: #1e293b !important; background: #f1f5f9 !important; border-radius: 6px !important; padding: 5px 10px !important; }
+    #wk-root .wk-card:hover .wk-btn { background: #234a31 !important; }
+    #wk-root .wk-status { color: var(--text-muted) !important; margin: 0 !important; }
+    #wk-root .wk-foot { margin-top: 14px !important; text-align: center !important; }
+    #wk-root .wk-link { color: var(--primary) !important; font-weight: 600 !important; font-size: 0.85rem !important; text-decoration: underline !important; text-underline-offset: 3px !important; }
+    #wk-root .wk-link:hover { color: var(--primary-hover) !important; }
+
+    /* Walk popup: matches the walker card in the scheduler (moved to <body> on load) */
+    #wk-modal { position: fixed !important; inset: 0 !important; background: rgba(15, 23, 42, 0.45) !important; display: none !important; align-items: center !important; justify-content: center !important; padding: 16px !important; z-index: 2147483000 !important; margin: 0 !important; }
+    #wk-modal.open { display: flex !important; }
+    #wk-modal .wk-dialog { background: #fff !important; color: #1f2937 !important; border-radius: 12px !important; width: min(600px, 100%) !important; max-height: 90vh !important; overflow-y: auto !important; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.3) !important; position: relative !important; text-align: left !important; font-size: 16px !important; padding: 0 !important; }
+    #wk-modal .wk-pop-head { background: #2d5b3e !important; color: #fff !important; padding: 22px 24px !important; position: sticky !important; top: 0 !important; z-index: 1 !important; }
+    #wk-modal .wk-pop-head h3 { font-size: 1.25rem !important; font-weight: 700 !important; color: #fff !important; line-height: 1.25 !important; padding-right: 32px !important; margin: 0 0 10px !important; }
+    #wk-modal .wk-pop-date { font-size: 1.05rem !important; font-weight: 600 !important; color: #fff !important; margin: 0 !important; }
+    #wk-modal .wk-close { position: absolute !important; top: 14px !important; right: 16px !important; background: none !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; color: #fff !important; font-size: 1.6rem !important; line-height: 1 !important; padding: 0 4px !important; cursor: pointer !important; }
+    #wk-modal .wk-pop-body { padding: 20px 24px 24px !important; }
+    #wk-modal .wk-stats { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 10px !important; margin: 0 0 18px !important; }
+    #wk-modal .wk-stat { background: #e8f1eb !important; border-radius: 12px !important; padding: 12px 14px !important; min-width: 0 !important; }
+    #wk-modal .wk-stat-label { font-size: 0.7rem !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; color: #2d5b3e !important; font-weight: 600 !important; line-height: 1.3 !important; }
+    #wk-modal .wk-stat-value { font-size: 1rem !important; font-weight: 700 !important; margin-top: 4px !important; color: #1e293b !important; word-break: break-word !important; }
+    #wk-modal .wk-quote { margin: 0 0 18px !important; padding: 4px 14px !important; border-left: 4px solid #d97706 !important; color: #374151 !important; font-size: 0.98rem !important; line-height: 1.5 !important; white-space: pre-wrap !important; font-weight: normal !important; }
+    #wk-modal .wk-quote-break { display: block !important; height: 8px !important; }
+    #wk-modal .wk-section { font-size: 0.78rem !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; color: #4b5563 !important; border-bottom: 1px solid #e5e7eb !important; padding-bottom: 6px !important; margin: 18px 0 10px !important; font-weight: 500 !important; }
+    #wk-modal .wk-section:first-child { margin-top: 0 !important; }
+    #wk-modal .wk-row { display: grid !important; grid-template-columns: 110px 1fr !important; gap: 8px !important; padding: 6px 0 !important; font-size: 0.95rem !important; color: #1f2937 !important; }
+    #wk-modal .wk-row-label { color: #4b5563 !important; font-weight: 500 !important; }
+    #wk-modal .wk-row-value { word-break: break-word !important; font-weight: normal !important; }
+    #wk-modal .wk-pill { display: inline-block !important; padding: 1px 8px !important; border-radius: 999px !important; background: #dcfce7 !important; color: #166534 !important; font-weight: 600 !important; font-size: 0.8rem !important; margin-left: 6px !important; }
+    #wk-modal .wk-dirs { background: #f3f4f6 !important; border-radius: 10px !important; padding: 14px 16px !important; color: #4b5563 !important; font-size: 0.95rem !important; line-height: 1.5 !important; white-space: pre-wrap !important; }
+    #wk-modal .wk-dogs { margin-top: 14px !important; font-size: 0.9rem !important; color: #4b5563 !important; }
+    #wk-modal a { color: #2d5b3e !important; text-decoration: underline !important; font-weight: 600 !important; }
+
+    #wk-modal .wk-levels-link { display: inline-block !important; background: none !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; padding: 4px 0 !important; margin: -6px 0 12px !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #2d5b3e !important; text-decoration: underline !important; cursor: pointer !important; }
+    #wk-levels { position: fixed !important; inset: 0 !important; background: rgba(15, 23, 42, 0.45) !important; display: none !important; align-items: center !important; justify-content: center !important; padding: 16px !important; z-index: 2147483100 !important; margin: 0 !important; }
+    #wk-levels.open { display: flex !important; }
+    #wk-levels .wk-levels-box { background: #fff !important; color: #1f2937 !important; border-radius: 12px !important; width: min(680px, 100%) !important; max-height: 85vh !important; overflow-y: auto !important; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important; position: relative !important; padding: 22px 26px !important; font-size: 0.92rem !important; line-height: 1.55 !important; text-align: left !important; }
+    #wk-levels h2 { font-size: 1.15rem !important; font-weight: 700 !important; margin: 0 0 12px !important; color: #1e293b !important; padding-right: 90px !important; }
+    #wk-levels h3 { font-size: 0.95rem !important; font-weight: 700 !important; margin: 16px 0 6px !important; text-decoration: underline !important; color: #1e293b !important; }
+    #wk-levels p { margin: 0 0 8px !important; color: #1f2937 !important; font-size: 0.92rem !important; }
+    #wk-levels .wk-levels-close { position: absolute !important; top: 16px !important; right: 18px !important; background: #fff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 6px 12px !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #1e293b !important; cursor: pointer !important; }
+
+    @media (max-width: 560px) {
+        #wk-root .wk-head h2 { font-size: 1.3rem !important; }
+        #wk-root .wk-grid { grid-template-columns: 1fr !important; }
+        #wk-modal .wk-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    }
 </style>
 
-<div class="wk-wrap">
+<div id="wk-root">
   <div class="wk-head">
     <h2>This week's walks</h2>
     <p class="wk-range" id="wk-range"></p>
   </div>
-  <iframe class="wk-frame" id="wk-frame"
-          src="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker&embed=week"
-          title="This week's walks" loading="lazy"></iframe>
+  <div class="wk-grid" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
   <div class="wk-foot">
-    <a class="wk-link" href="?view=programme-scheduler">Open the full walk programme &rarr;</a>
+    <a class="wk-link" href="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
   </div>
 </div>
 
-<script>
-  (function () {
-    const ORIGIN = "https://magicstreak.github.io";
-    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+<div class="wk-modal" id="wk-modal" role="dialog" aria-modal="true" aria-labelledby="wk-modal-title" style="display:none">
+  <div class="wk-dialog" id="wk-dialog"></div>
+</div>
 
-    // Week label: Sunday to Saturday
+<div id="wk-levels" role="dialog" aria-modal="true" aria-labelledby="wk-levels-title">
+  <div class="wk-levels-box">
+    <button type="button" class="wk-levels-close" data-close-levels>Close</button>
+    <h2 id="wk-levels-title">Walk Levels</h2>
+    <p><strong>E - Easy:</strong> A walk of up to 4½ hours on good surfaced tracks and less than 200 metres total ascent.</p>
+    <p><strong>M - Moderate:</strong> up to 12km, less than 400 metres total ascent and less than 50% rough going.</p>
+    <p><strong>MS - Moderately Strenuous:</strong> Up to 600 metres total ascent and/or no more than 15 km with some rough going taken at a reasonable pace.</p>
+    <p><strong>S - Strenuous:</strong> More than 600 metres total ascent and/or more than 15km with steep, loose or heavily vegetated sections.</p>
+    <p><strong>VS - Very Strenuous:</strong> More than 800 metres total ascent and/or more than 20km with steep, loose or heavily vegetated sections.</p>
+    <p><strong>X - Experienced walkers routes:</strong> Routes which require considerable stamina and/or significant scrambling skills on rough, steep or exposed sections.</p>
+    <p><strong>Scr - Scrambling:</strong> This implies the need for handholds to ascend steep rock pitches with a sense of exposure to vertigo and where a slip could lead to a serious accident.</p>
+    <p><strong>Scr0</strong> Very easy scrambling. Short sections requiring the use of handholds on not very steep or sustained sections. No exposure.</p>
+    <p><strong>Scr1</strong> Easy scrambling, requiring the use of handholds on not very steep or sustained sections. No exposure.</p>
+    <p><strong>Scr2</strong> Scrambling with some technical moves over steep and more continuous sections. With the probability of some exposure.</p>
+    <p><strong>Scr3</strong> Technically difficult scrambling. Sometimes over prolonged sections, possibly very exposed and with steep drops to one or both sides. Not easy to reverse down or escape from.</p>
+    <h3>Terrain</h3>
+    <p><strong>A</strong> - All good tracks</p>
+    <p><strong>B</strong> - Less than half the route on rough ground</p>
+    <p><strong>C</strong> - More than half the route on rough ground or routes with difficult steep awkward/rocky sections.</p>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  // Same published databases as the walk scheduler (client config is public)
+  const calendarConfig = {
+    apiKey: "AIzaSyC0hEmdWHSlBkdnxrQiNt_RITYsbj3wvi0",
+    authDomain: "cbmw-walk-scheduler.firebaseapp.com",
+    databaseURL: "https://cbmw-walk-scheduler-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cbmw-walk-scheduler",
+    storageBucket: "cbmw-walk-scheduler.firebasestorage.app",
+    messagingSenderId: "108766389213",
+    appId: "1:108766389213:web:cded7ada3d32874b380c34"
+  };
+  const walksConfig = {
+    apiKey: "AIzaSyB9WLJSl4QmubgBW5rknmnMeHcNbkwqOHQ",
+    authDomain: "programme-planning.firebaseapp.com",
+    databaseURL: "https://programme-planning-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "programme-planning",
+    storageBucket: "programme-planning.firebasestorage.app",
+    messagingSenderId: "1028011310189",
+    appId: "1:1028011310189:web:8ac4f37a8d248899735364"
+  };
+
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const OVERRIDE_FIELDS = ["Distance", "Ascent", "Total_Time", "Terrain", "Scr", "Dogs", "Latitude", "Longitude", "Route_Description", "Directions"];
+
+  let bookings = {}, socials = {}, masters = {}, leaders = {}, loaded = false;
+  let items = [];
+
+  const pad = (n) => String(n).padStart(2, "0");
+  // Booking dates are DD-MM-YYYY
+  const dmy = (d) => `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
+  const isoOf = (dmyStr) => { const p = String(dmyStr || "").split("-"); return p.length === 3 ? `${p[2]}-${p[1]}-${p[0]}` : ""; };
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const clean = (v) => String(v ?? "").trim();
+  const dash = (v) => (clean(v) ? esc(clean(v)) : "–");
+
+  function weekDays() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const sun = new Date(today);
-    sun.setDate(today.getDate() - today.getDay());
-    const sat = new Date(sun);
-    sat.setDate(sun.getDate() + 6);
-    const fmt = (d) => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
-    document.getElementById("wk-range").textContent = `${fmt(sun)} – ${fmt(sat)}`;
+    const start = new Date(today);
+    start.setDate(today.getDate() - today.getDay());
+    return Array.from({ length: 7 }, (_, i) => { const d = new Date(start); d.setDate(start.getDate() + i); return d; });
+  }
 
-    // The scheduler reports its list height, so the frame fits the walks without an inner scrollbar
-    window.addEventListener("message", (e) => {
-      if (e.origin !== ORIGIN || !e.data || e.data.type !== "cbmw-week-height") return;
-      document.getElementById("wk-frame").style.height = `${Math.max(120, e.data.height)}px`;
+  // The walk database record for a booking's Walk ID, tolerant of ID formats
+  function masterFor(walkNumber) {
+    const key = clean(walkNumber);
+    if (!key) return null;
+    if (masters[key]) return masters[key];
+    const hit = Object.entries(masters).find(([id, w]) => clean(id) === key || clean(w?.Walk_ID ?? w?.walkid ?? w?.Walk_Number) === key);
+    return hit ? hit[1] : null;
+  }
+
+  // Walk route as the scheduler merges it: database values, with any booking overrides on top
+  function routeFor(record) {
+    const master = masterFor(record.walk_number || record.walk_id) || {};
+    const ov = record.overrides || {};
+    const merged = { ...master };
+    OVERRIDE_FIELDS.forEach((k) => { if (clean(ov[k])) merged[k] = ov[k]; });
+    return merged;
+  }
+
+  function coordsOf(route) {
+    const lat = clean(route.Latitude), lon = clean(route.Longitude);
+    if (!lat || !lon || !Number.isFinite(Number(lat)) || !Number.isFinite(Number(lon))) return null;
+    return { text: `${lat}, ${lon}`, url: `https://www.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(lon)}` };
+  }
+
+  function safeUrl(raw) {
+    try {
+      const u = new URL(clean(raw), window.location.href);
+      return ["http:", "https:"].includes(u.protocol) ? u.href : "";
+    } catch (_) { return ""; }
+  }
+
+  // Live walks only (as the walker view shows them), plus summer programme walks
+  function collectItems() {
+    const days = weekDays().map(dmy);
+    const out = [];
+    Object.values(bookings).forEach((b) => {
+      if (!b || !days.includes(b.date) || b.status !== "live" || b.cancelled === true) return;
+      const route = routeFor(b);
+      out.push({
+        kind: "walk", date: b.date, time: clean(b.start_time), name: clean(route.Route_Name || route.Walk_Name) || clean(b.walk_name) || `Walk ${clean(b.walk_number)}`,
+        walkId: clean(b.walk_number), leader: clean(b.leader_name), leaderId: clean(b.leader_id), comments: clean(b.comments),
+        grade: clean(route.Grade || b.walk_grade), terrain: clean(route.Terrain), scr: clean(route.Scr), x: clean(route.X),
+        distance: clean(route.Distance), ascent: clean(route.Ascent), duration: clean(route.Total_Time), dogs: clean(route.Dogs),
+        description: clean(route.Route_Description), directions: clean(route.Directions),
+        coords: coordsOf(route), wis: safeUrl(route.WiS_URL ?? route.WIS_URL ?? route.WiS_Url ?? ""), image: safeUrl(route.Image_URL),
+      });
     });
-  })();
+    Object.values(socials).forEach((r) => {
+      if (!r || r.type !== "summer" || !days.includes(r.date)) return;
+      out.push({
+        kind: "summer", date: r.date, time: clean(r.start_time), name: clean(r.title) || "Summer walk",
+        leader: clean(r.leader), duration: clean(r.duration), distance: clean(r.distance), ascent: clean(r.ascent),
+        description: clean(r.description), meeting: clean(r.meeting_point), contact: clean(r.contact), image: safeUrl(r.image_url),
+      });
+    });
+    return out.sort((a, b) => (isoOf(a.date) + a.time).localeCompare(isoOf(b.date) + b.time));
+  }
+
+  function cardHtml(it, idx) {
+    const d = weekDays().find((day) => dmy(day) === it.date);
+    const when = d ? `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}` : it.date;
+    const summer = it.kind === "summer";
+    const detailLines = [
+      summer ? "" : `<div class="wk-fact"><span class="wk-k">Grade:</span><span>${[it.grade, it.terrain, ...[it.scr, it.x].filter((v) => clean(v))].map(dash).join(" / ")}</span></div>`,
+      `<div class="wk-fact"><span class="wk-k">Distance:</span><span>${dash(it.distance)}</span></div>`,
+      `<div class="wk-fact"><span class="wk-k">Ascent:</span><span>${dash(it.ascent)}</span></div>`,
+    ].join("");
+    const when_line = [when, clean(it.time), clean(it.duration)].filter(Boolean).join(" · ");
+    return `<button type="button" class="wk-card${summer ? " wk-summer" : ""}" data-idx="${idx}">
+      <div class="wk-img">
+        ${it.image
+          ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy" referrerpolicy="no-referrer" />`
+          : `<svg viewBox="0 0 24 24" fill="none" stroke="${summer ? "#a16207" : "#2d5b3e"}" stroke-width="1.6"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg>`}
+        ${summer ? `<span class="wk-tag">Summer</span>` : ""}
+      </div>
+      <div class="wk-body">
+        <div class="wk-title">${esc(it.name)}</div>
+        ${it.description ? `<div class="wk-desc">${esc(it.description)}</div>` : ""}
+        <div class="wk-facts">${detailLines}</div>
+      </div>
+      <div class="wk-foot-row">
+        <span class="wk-when-line">${esc(when_line)}</span>
+        <span class="wk-btn">See details</span>
+      </div>
+    </button>`;
+  }
+
+  function row(label, valueHtml) {
+    return `<div class="wk-row"><span class="wk-row-label">${label}</span><span class="wk-row-value">${valueHtml}</span></div>`;
+  }
+
+  // Leader record from the leaders list: by Leader ID, else by name
+  function leaderFor(it) {
+    const list = Object.values(leaders || {}).filter(Boolean);
+    return list.find((l) => clean(l.leader_id) && clean(l.leader_id) === it.leaderId)
+      || list.find((l) => fullName(l) === clean(it.leader))
+      || null;
+  }
+  function fullName(l) {
+    return l ? `${clean(l.first_name)} ${clean(l.surname)}`.trim() : "";
+  }
+
+  // Popup: the same layout as the walker card in the scheduler
+  function dialogHtml(it) {
+    const dt = new Date(`${isoOf(it.date)}T00:00`);
+    const longDate = isNaN(dt) ? it.date : dt.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
+    const when = [longDate, clean(it.time)].filter(Boolean).join(" • ");
+
+    const stats = it.kind === "walk"
+      ? [["Distance", dash(it.distance)], ["Ascent", dash(it.ascent)], ["Duration", dash(it.duration)],
+         ["Grade", [it.grade, it.terrain, ...[it.scr, it.x].filter((v) => clean(v))].map(dash).join(" / ")]]
+      : [["Distance", dash(it.distance)], ["Ascent", dash(it.ascent)], ["Duration", dash(it.duration)]];
+    const statsHtml = `<div class="wk-stats">${stats.map(([l, v]) => `<div class="wk-stat"><div class="wk-stat-label">${l}</div><div class="wk-stat-value">${v}</div></div>`).join("")}</div>`;
+
+    const quoteParts = [it.description, it.comments].filter((v) => clean(v)).map((v) => esc(clean(v)));
+    const quote = quoteParts.length ? `<blockquote class="wk-quote">${quoteParts.join('<span class="wk-quote-break"></span>')}</blockquote>` : "";
+
+    const L = leaderFor(it);
+    const phones = L ? [L.phone_1, L.phone_2].filter((p) => clean(p)) : [];
+    const leaderValue = L ? esc(fullName(L)) : (clean(it.leader) ? esc(clean(it.leader)) : "–");
+    const phoneHtml = phones.length
+      ? phones.map((p) => `<a href="tel:${esc(String(p).replace(/[^\d+]/g, ""))}">${esc(clean(p))}</a>`).join(" · ")
+        + (L && L.whats_app === "y" ? `<span class="wk-pill">WhatsApp</span>` : "")
+      : "";
+
+    const rows = [
+      row("Leader:", leaderValue),
+      phoneHtml ? row("Phone:", phoneHtml) : "",
+      it.kind === "summer" && clean(it.contact) ? row("Booking / contact:", esc(clean(it.contact))) : "",
+      it.coords ? row("Meeting point:", `<a href="${esc(it.coords.url)}" target="_blank" rel="noopener noreferrer">${esc(it.coords.text)} ↗</a>`)
+        : (clean(it.meeting) ? row("Meeting point:", esc(clean(it.meeting))) : ""),
+      it.wis ? row("Route map:", `<a href="${esc(it.wis)}" target="_blank" rel="noopener noreferrer">Walks In Spain ↗</a>`) : "",
+    ].join("");
+
+    const directions = it.kind === "walk" && clean(it.directions)
+      ? `<div class="wk-section">Driving directions</div><div class="wk-dirs">${esc(clean(it.directions))}</div>` : "";
+    const dogs = it.kind === "walk" && clean(it.dogs) ? `<div class="wk-dogs">🐾 ${esc(clean(it.dogs))}</div>` : "";
+
+    return `
+      <div class="wk-pop-head">
+        <button type="button" class="wk-close" data-close aria-label="Close">×</button>
+        <h3 id="wk-modal-title">${esc(it.name)}</h3>
+        <div class="wk-pop-date">📅 ${esc(when)}</div>
+      </div>
+      <div class="wk-pop-body">
+        ${statsHtml}
+        ${quote}
+        ${it.kind === "walk" ? `<button type="button" class="wk-levels-link" data-open-levels>What do the walk levels mean?</button>` : ""}
+        <div class="wk-section">Leader and location</div>
+        ${rows}
+        ${directions}
+        ${dogs}
+      </div>`;
+  }
+
+  function openWalk(idx) {
+    const it = items[idx];
+    if (!it) return;
+    document.getElementById("wk-dialog").innerHTML = dialogHtml(it);
+    const modal = document.getElementById("wk-modal");
+    modal.style.display = "";
+    modal.classList.add("open");
+    document.querySelector("#wk-dialog [data-close]").focus();
+  }
+  function closeWalk() {
+    const modal = document.getElementById("wk-modal");
+    modal.classList.remove("open");
+    modal.style.display = "none";
+  }
+  function openLevels() {
+    document.getElementById("wk-levels").classList.add("open");
+    document.querySelector("#wk-levels .wk-levels-close").focus();
+  }
+  function closeLevels() {
+    document.getElementById("wk-levels").classList.remove("open");
+  }
+
+  function render() {
+    const days = weekDays();
+    const fmt = (d) => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    document.getElementById("wk-range").textContent = `${fmt(days[0])} – ${fmt(days[6])}`;
+    const grid = document.getElementById("wk-grid");
+    if (!loaded) { grid.innerHTML = `<p class="wk-status">Loading this week's walks…</p>`; return; }
+    items = collectItems();
+    grid.innerHTML = items.length
+      ? items.map(cardHtml).join("")
+      : `<p class="wk-status">No walks scheduled this week.</p>`;
+  }
+
+  function showError() {
+    document.getElementById("wk-grid").innerHTML = `<p class="wk-status">This week's walks could not be loaded. Please try again later.</p>`;
+  }
+
+  // Move the popup to <body> so theme containers (transforms, overflow, positioning) cannot trap or clip it
+  document.body.appendChild(document.getElementById("wk-modal"));
+  document.body.appendChild(document.getElementById("wk-levels"));
+
+  document.getElementById("wk-grid").addEventListener("click", (e) => {
+    const card = e.target.closest("[data-idx]");
+    if (card) openWalk(Number(card.dataset.idx));
+  });
+  document.getElementById("wk-modal").addEventListener("click", (e) => {
+    if (e.target.closest("[data-open-levels]")) { openLevels(); return; }
+    if (e.target.id === "wk-modal" || e.target.closest("[data-close]")) closeWalk();
+  });
+  document.getElementById("wk-levels").addEventListener("click", (e) => {
+    if (e.target.id === "wk-levels" || e.target.closest("[data-close-levels]")) closeLevels();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (document.getElementById("wk-levels").classList.contains("open")) closeLevels();
+    else closeWalk();
+  });
+
+  render();
+  try {
+    const calApp = initializeApp(calendarConfig, "wkCalendar");
+    const walksApp = initializeApp(walksConfig, "wkWalks");
+    const calDb = getDatabase(calApp);
+    const walksDb = getDatabase(walksApp);
+    Promise.allSettled([signInAnonymously(getAuth(calApp)), signInAnonymously(getAuth(walksApp))]).then(() => {
+      onValue(ref(calDb, "walk_bookings"), (s) => { bookings = s.val() || {}; loaded = true; render(); }, showError);
+      onValue(ref(calDb, "social_events"), (s) => { socials = s.val() || {}; render(); }, showError);
+      onValue(ref(walksDb, "walks"), (s) => { masters = s.val() || {}; render(); }, showError);
+      onValue(ref(walksDb, "leaders"), (s) => { leaders = s.val() || {}; }, () => {});
+    });
+  } catch (err) {
+    showError();
+  }
+  // Roll over to the new week at midnight without a reload
+  setInterval(render, 15 * 60 * 1000);
 </script>
