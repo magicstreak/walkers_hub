@@ -1,224 +1,248 @@
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaders Hub</title>
-    <style>
-        :root {
-            --bg-color: #fafafa;
-            --card-bg: #ffffff;
-            --card-border: #e4e4e7;
-            --card-border-hover: #cbd5e1;
-            --text-primary: #09090b;
-            --text-secondary: #71717a;
-            --icon-bg: #f4f4f5;
-            --icon-color: #3f3f46;
-            --focus-ring: #2563eb;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
-            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-        }
+<!-- CBMW Walkers Hub: paste the whole file into one WordPress "Custom HTML" block -->
+<style>
+    .hub-wrap {
+        --bg-color: #f7f8fa;
+        --card-bg: #ffffff;
+        --card-border: #e4e4e7;
+        --card-border-hover: #cbd5e1;
+        --text-primary: #0f172a;
+        --text-secondary: #64748b;
+        --focus-ring: #2563eb;
+        --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+        --card-shadow-hover: 0 14px 28px -8px rgba(15, 23, 42, 0.14), 0 4px 8px -4px rgba(15, 23, 42, 0.08);
+        background: var(--bg-color);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        padding: 2.5rem 0 3rem;
+    }
+    .hub-wrap *, .hub-wrap *::before, .hub-wrap *::after { box-sizing: border-box; }
+    .hub-container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    /* Cards */
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .hub-card {
+        position: relative;
+        overflow: hidden;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 2rem 1.75rem 1.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    /* Coloured top edge for each card */
+    .hub-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--accent, #94a3b8);
+    }
+    .hub-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .hub-tag {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent, #64748b);
+        background: color-mix(in srgb, var(--accent, #64748b) 10%, white);
+        padding: 0.25rem 0.55rem;
+        border-radius: 999px;
+        white-space: nowrap;
+    }
+    .hub-icon {
+        background: color-mix(in srgb, var(--accent, #64748b) 12%, white);
+        color: var(--accent, #475569);
+        width: 48px; height: 48px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 12px;
+        flex-shrink: 0;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+    .hub-icon svg { width: 24px; height: 24px; }
+    .hub-card h2 { font-size: 1.2rem; font-weight: 650; letter-spacing: -0.01em; color: var(--text-primary); margin: 0.25rem 0 0; }
+    .hub-card p { color: var(--text-secondary); font-size: 0.93rem; line-height: 1.6; margin: 0; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding: 0; /* Keep this 0 so hero banners can span edge-to-edge */
-        }
+    /* Linked cards behave like buttons */
+    a.hub-card { cursor: pointer; }
+    a.hub-card:hover { transform: translateY(-4px); border-color: var(--card-border-hover); box-shadow: var(--card-shadow-hover); }
+    a.hub-card:hover .hub-icon { background: var(--accent); color: #ffffff; }
+    a.hub-card:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
+    .hub-open {
+        margin-top: auto;
+        padding-top: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--accent);
+    }
+    a.hub-card:hover .hub-open { text-decoration: underline; }
 
-        .dashboard-container {
-            width: 100%;
-            max-width: 1100px;
-            margin: 4rem auto;      /* FIXED: Centers the block on the page and gives top/bottom spacing */
-            padding: 0 2rem;        /* FIXED: Prevents cards from smashing against screen edges on mobile devices */
-        }
+    /* Back link and embedded app view */
+    .hub-back { display: inline-block; margin: 1rem 0 15px; color: #4a5568; text-decoration: none; font-size: 14px; font-weight: 500; }
+    .hub-frame { width: 100%; height: calc(100vh - 60px); min-height: 700px; border: none; border-radius: 12px; box-shadow: var(--card-shadow-hover); background: #fff; }
 
-        header {
-            margin-bottom: 3rem;
-        }
+    @media (prefers-reduced-motion: reduce) {
+        .hub-card, .hub-icon { transition: none; }
+        a.hub-card:hover { transform: none; }
+    }
+</style>
 
-        h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
+<div class="hub-wrap">
+  <div class="hub-container">
+    <div id="hub-cards">
+      <main class="hub-grid">
 
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 400;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
-                        border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
-                        box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Interactive states for links */
-        a.card {
-            cursor: pointer;
-        }
-
-        a.card:hover {
-            transform: translateY(-4px);
-            border-color: var(--card-border-hover);
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        a.card:focus-visible {
-            outline: 2px solid var(--focus-ring);
-            outline-offset: 4px;
-        }
-
-        /* Non-link placeholder cards */
-        div.card {
-            cursor: default;
-            opacity: 0.85;
-        }
-
-        .icon-wrapper {
-            background: var(--icon-bg);
-            color: var(--icon-color);
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            margin-bottom: 0.25rem;
-        }
-
-        .icon-wrapper svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .card h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            color: var(--text-primary);
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            font-size: 0.925rem;
-            line-height: 1.6;
-        }
-    </style>
-
-    <div class="dashboard-container">
-        <main class="grid">
-            <!-- Card 1: Programme Scheduler -->
-            <a href="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker" class="card">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                </div>
-                <h2>Walk Programme</h2>
-                <p>View upcoming seasonal walks.  Easily filter by dates, starting points, and group leaders.</p>
-            </a>
-
-            <!-- Card 2: Walk Route Database -->
-            <a href="https://magicstreak.github.io/CBMW-Programme-Planner/?view=walker" class="card">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                        <line x1="8" y1="2" x2="8" y2="18"></line>
-                        <line x1="16" y1="6" x2="16" y2="22"></line>
-                    </svg>
-                </div>
-                <h2>Walk Route Database</h2>
-                <p>Browse and explore the verified database catalog of CBMW walking routes.</p>
-            </a>
-
-            <!-- Card 3: Post Walk Statistics -->
-            <a href="https://magicstreak.github.io/postwalk-stats/" class="card">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                    </svg>
-                </div>
-                <h2>Walk Grading </h2>
-                <p>From easy strolls to strenuous mountain climbs.  Find the perfect match for your fitness level.</p>
-            </a>
-
-            <!-- Card 4: Leader Directory -->
-            <div class="card">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </div>
-                <h2>Safety Advice and Insurance</h2>
-                <p>Important advice regarding safety conventions, liability insurance and mandatory equipment</p>
+        <!-- Walk Programme: opens the scheduler in walker view inside the hub -->
+        <a href="?view=programme-scheduler" class="hub-card" style="--accent: #0f766e;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
             </div>
+            <span class="hub-tag">Plan</span>
+          </div>
+          <h2>Walk Programme</h2>
+          <p>View upcoming seasonal walks. Easily filter by dates, starting points, and group leaders.</p>
+          <span class="hub-open">Open programme →</span>
+        </a>
 
-            <!-- Card 5: Library -->
-            <div class="card">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"></path>
-                    </svg>
-                </div>
-                <h2>Library</h2>
-                <p>Access documentation templates, safety guidelines, and leadership files.</p>
+        <!-- Walk Route Database -->
+        <a href="?view=walks-database" class="hub-card" style="--accent: #2563eb;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
             </div>
- <!-- Card 5: Whatsapp -->
-            <div class="card">
-                <div class="icon-wrapper">
-                    <i class="fab fa-whatsapp" style="color: #25D366; font-size: 24px;"></i>
-                </div>
-                <h2>WhatsApp</h2>
-                <p>Signup to our WhatsApp channel to receive Alerts</p>
-            </div>
+            <span class="hub-tag">Explore</span>
+          </div>
+          <h2>Walk Route Database</h2>
+          <p>Browse and explore the verified database catalog of CBMW walking routes.</p>
+          <span class="hub-open">Browse routes →</span>
+        </a>
 
-            <!-- Card 6: Calendar -->
-            <div class="card">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                </div>
-                <h2>Join us on a Walk</h2>
-                <p>New to the área? Learn how the community operates and how to purchase a fob.</p>
+        <!-- Walk Grading: placeholder until its page is linked -->
+        <div class="hub-card" style="--accent: #d97706;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
             </div>
-        </main>
+            <span class="hub-tag">Explore</span>
+          </div>
+          <h2>Walk Grading</h2>
+          <p>From easy strolls to strenuous mountain climbs. Find the perfect match for your fitness level.</p>
+        </div>
+
+        <!-- Safety: placeholder -->
+        <div class="hub-card" style="--accent: #dc2626;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <span class="hub-tag">Prepare</span>
+          </div>
+          <h2>Safety Advice and Insurance</h2>
+          <p>Important advice on safety conventions, liability insurance and mandatory equipment.</p>
+        </div>
+
+        <!-- Library: placeholder -->
+        <div class="hub-card" style="--accent: #7c3aed;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"></path>
+              </svg>
+            </div>
+            <span class="hub-tag">Resources</span>
+          </div>
+          <h2>Library</h2>
+          <p>Access documentation templates, safety guidelines, and leadership files.</p>
+        </div>
+
+        <!-- WhatsApp: placeholder until the channel link is added -->
+        <div class="hub-card" style="--accent: #25d366;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.9-.9L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z"></path>
+              </svg>
+            </div>
+            <span class="hub-tag">Stay in touch</span>
+          </div>
+          <h2>WhatsApp</h2>
+          <p>Sign up to our WhatsApp channel to receive alerts.</p>
+        </div>
+
+        <!-- Join: placeholder -->
+        <div class="hub-card" style="--accent: #0891b2;">
+          <div class="hub-card-top">
+            <div class="hub-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <line x1="19" y1="8" x2="19" y2="14"></line>
+                <line x1="22" y1="11" x2="16" y2="11"></line>
+              </svg>
+            </div>
+            <span class="hub-tag">New here</span>
+          </div>
+          <h2>Join us on a Walk</h2>
+          <p>New to the area? Learn how the community operates and how to purchase a fob.</p>
+        </div>
+
+      </main>
     </div>
+
+    <!-- Opened when a card links to an app -->
+    <div id="hub-frame-wrap" style="display: none;">
+      <a href="?" class="hub-back">← Back to Home Page</a>
+      <iframe id="hub-frame" class="hub-frame" src="" title="CBMW app"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // Published address for each card, opened in walker view.
+    const APPS = {
+      "programme-scheduler": "https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker",
+      "walks-database":      "https://magicstreak.github.io/CBMW-Programme-Planner/?view=walker"
+    };
+
+    const current = new URLSearchParams(window.location.search).get("view");
+    if (current && APPS[current]) {
+      document.getElementById("hub-cards").style.display = "none";
+      // Full-screen app view: the page itself stops scrolling, so only the app scrolls
+      const wrap = document.getElementById("hub-frame-wrap");
+      Object.assign(wrap.style, {
+        position: "fixed", top: "0", left: "0", right: "0", bottom: "0",
+        zIndex: "99999", background: "#fff", padding: "8px 12px", overflow: "hidden", display: "block"
+      });
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      const frame = document.getElementById("hub-frame");
+      frame.style.height = "calc(100vh - 50px)";
+      frame.style.minHeight = "0";
+      frame.style.boxShadow = "none";
+      frame.src = APPS[current];
+    }
+  })();
+</script>
