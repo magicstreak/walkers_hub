@@ -266,7 +266,7 @@
         grade: clean(route.Grade || b.walk_grade), terrain: clean(route.Terrain), scr: clean(route.Scr), x: clean(route.X),
         distance: clean(route.Distance), ascent: clean(route.Ascent), duration: clean(route.Total_Time), dogs: clean(route.Dogs),
         description: clean(route.Route_Description), directions: clean(route.Directions),
-        coords: coordsOf(route), wis: safeUrl(route.WiS_URL ?? route.WIS_URL ?? route.WiS_Url ?? ""),
+        coords: coordsOf(route), wis: safeUrl(route.WiS_URL ?? route.WIS_URL ?? route.WiS_Url ?? ""), gpxName: clean(route.GPX_Name),
         image: safeUrl(route.Image_URL) || photoFor(clean(b.walk_number), route),
       });
     });
@@ -309,6 +309,28 @@
       </div>
     </button>`;
   }
+
+  // GPX route file: kept in Firebase at walk_gpx/{walk key}, fetched only when clicked
+  document.addEventListener("click", async (e) => {
+    const link = e.target.closest("[data-gpx-download]");
+    if (!link) return;
+    e.preventDefault();
+    try {
+      const file = (await get(ref(walksDbRef, "walk_gpx/" + link.dataset.gpxDownload))).val();
+      if (!file || !file.text) return alert("The GPX file could not be found.");
+      const url = URL.createObjectURL(new Blob([file.text], { type: "application/gpx+xml" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name || link.dataset.gpxName || "route.gpx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      console.error("GPX download failed:", err);
+      alert("Could not download the GPX file. Check the database connection.");
+    }
+  });
 
   function row(label, valueHtml) {
     return `<div class="wk-row"><span class="wk-row-label">${label}</span><span class="wk-row-value">${valueHtml}</span></div>`;
@@ -355,6 +377,8 @@
       it.coords ? row("Meeting point:", `<a href="${esc(it.coords.url)}" target="_blank" rel="noopener noreferrer">${esc(it.coords.text)} ↗</a>`)
         : (clean(it.meeting) ? row("Meeting point:", esc(clean(it.meeting))) : ""),
       it.wis ? row("Route map:", `<a href="${esc(it.wis)}" target="_blank" rel="noopener noreferrer">Walks In Spain ↗</a>`) : "",
+      it.kind === "walk" && it.gpxName && it.walkId
+        ? row("GPX route:", `<a href="#" data-gpx-download="${esc(it.walkId)}" data-gpx-name="${esc(it.gpxName)}">Download GPX ↓</a>`) : "",
     ].join("");
 
     const directions = it.kind === "walk" && clean(it.directions)
