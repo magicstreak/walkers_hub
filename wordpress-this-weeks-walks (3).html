@@ -127,7 +127,7 @@
   </div>
   <div class="wk-grid" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
   <div class="wk-foot">
-    <a class="wk-link" href="http://test.cbmwalkers.org/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
+    <a class="wk-link" href="http://test.cbmwalkers.org/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">Open the full walk programme →</a>
   </div>
 </div>
 
@@ -137,7 +137,7 @@
 
 <div id="wk-levels" role="dialog" aria-modal="true" aria-labelledby="wk-levels-title">
   <div class="wk-levels-box">
-    <button type="button" class="wk-levels-close" data-close-levels>Close</button>
+    <button type="button" class="wk-levels-close" data-close-levels="">Close</button>
     <h2 id="wk-levels-title">Walk Levels</h2>
     <p><strong>E - Easy:</strong> A walk of up to 4½ hours on good surfaced tracks and less than 200 metres total ascent.</p>
     <p><strong>M - Moderate:</strong> up to 12km, less than 400 metres total ascent and less than 50% rough going.</p>
@@ -334,20 +334,20 @@
       row("Leader:", leaderValue),
       phoneHtml ? row("Phone:", phoneHtml) : "",
       it.kind === "summer" && clean(it.contact) ? row("Booking / contact:", esc(clean(it.contact))) : "",
-      it.coords ? row("Meeting point:", `<a href="${esc(it.coords.url)}" target="_blank" rel="noopener noreferrer">${esc(it.coords.text)} ↗</a>`)
+      it.coords ? row("Meeting point:", `<a href="${esc(it.coords.url)}" target="_blank" rel="noopener noreferrer">${esc(it.coords.text)} &#x2197;</a>`)
         : (clean(it.meeting) ? row("Meeting point:", esc(clean(it.meeting))) : ""),
-      it.wis ? row("Route map:", `<a href="${esc(it.wis)}" target="_blank" rel="noopener noreferrer">Walks In Spain ↗</a>`) : "",
+      it.wis ? row("Route map:", `<a href="${esc(it.wis)}" target="_blank" rel="noopener noreferrer">Walks In Spain &#x2197;</a>`) : "",
     ].join("");
 
     const directions = it.kind === "walk" && clean(it.directions)
       ? `<div class="wk-section">Driving directions</div><div class="wk-dirs">${esc(clean(it.directions))}</div>` : "";
-    const dogs = it.kind === "walk" && clean(it.dogs) ? `<div class="wk-dogs">🐾 ${esc(clean(it.dogs))}</div>` : "";
+    const dogs = it.kind === "walk" && clean(it.dogs) ? `<div class="wk-dogs">&#x1f43e; ${esc(clean(it.dogs))}</div>` : "";
 
     return `
       <div class="wk-pop-head">
         <button type="button" class="wk-close" data-close aria-label="Close">×</button>
         <h3 id="wk-modal-title">${esc(it.name)}</h3>
-        <div class="wk-pop-date">📅 ${esc(when)}</div>
+        <div class="wk-pop-date">&#x1f4c5; ${esc(when)}</div>
       </div>
       <div class="wk-pop-body">
         ${statsHtml}
