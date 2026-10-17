@@ -127,7 +127,7 @@
   </div>
   <div class="wk-grid" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
   <div class="wk-foot">
-    <a class="wk-link" href="http://test.cbmwalkers.org/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">Open the full walk programme →</a>
+    <a class="wk-link" href="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
   </div>
 </div>
 
@@ -137,7 +137,7 @@
 
 <div id="wk-levels" role="dialog" aria-modal="true" aria-labelledby="wk-levels-title">
   <div class="wk-levels-box">
-    <button type="button" class="wk-levels-close" data-close-levels="">Close</button>
+    <button type="button" class="wk-levels-close" data-close-levels>Close</button>
     <h2 id="wk-levels-title">Walk Levels</h2>
     <p><strong>E - Easy:</strong> A walk of up to 4½ hours on good surfaced tracks and less than 200 metres total ascent.</p>
     <p><strong>M - Moderate:</strong> up to 12km, less than 400 metres total ascent and less than 50% rough going.</p>
@@ -160,7 +160,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   // Same published databases as the walk scheduler (client config is public)
   const calendarConfig = {
@@ -236,6 +236,23 @@
     } catch (_) { return ""; }
   }
 
+  // Photos uploaded by leaders are stored in Firebase (walk_photos/{walk key}) and fetched one walk at a time, when needed
+  let walksDbRef = null;
+  const photoCache = {};
+  const photoRequested = {};
+  function photoFor(walkKey, route) {
+    if (!walkKey || !clean(route.Photo_Name) || !walksDbRef) return "";
+    if (photoCache[walkKey]) return photoCache[walkKey];
+    if (!photoRequested[walkKey]) {
+      photoRequested[walkKey] = true;
+      get(ref(walksDbRef, "walk_photos/" + walkKey)).then((snap) => {
+        const v = snap.val();
+        if (v && /^data:image\/jpeg;base64,/.test(v.data || "")) { photoCache[walkKey] = v.data; render(); }
+      }).catch(() => {});
+    }
+    return "";
+  }
+
   // Live walks only (as the walker view shows them), plus summer programme walks
   function collectItems() {
     const days = weekDays().map(dmy);
@@ -249,7 +266,8 @@
         grade: clean(route.Grade || b.walk_grade), terrain: clean(route.Terrain), scr: clean(route.Scr), x: clean(route.X),
         distance: clean(route.Distance), ascent: clean(route.Ascent), duration: clean(route.Total_Time), dogs: clean(route.Dogs),
         description: clean(route.Route_Description), directions: clean(route.Directions),
-        coords: coordsOf(route), wis: safeUrl(route.WiS_URL ?? route.WIS_URL ?? route.WiS_Url ?? ""), image: safeUrl(route.Image_URL),
+        coords: coordsOf(route), wis: safeUrl(route.WiS_URL ?? route.WIS_URL ?? route.WiS_Url ?? ""), gpxName: clean(route.GPX_Name),
+        image: safeUrl(route.Image_URL) || photoFor(clean(b.walk_number), route),
       });
     });
     Object.values(socials).forEach((r) => {
@@ -291,6 +309,28 @@
       </div>
     </button>`;
   }
+
+  // GPX route file: kept in Firebase at walk_gpx/{walk key}, fetched only when clicked
+  document.addEventListener("click", async (e) => {
+    const link = e.target.closest("[data-gpx-download]");
+    if (!link) return;
+    e.preventDefault();
+    try {
+      const file = (await get(ref(walksDbRef, "walk_gpx/" + link.dataset.gpxDownload))).val();
+      if (!file || !file.text) return alert("The GPX file could not be found.");
+      const url = URL.createObjectURL(new Blob([file.text], { type: "application/gpx+xml" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name || link.dataset.gpxName || "route.gpx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      console.error("GPX download failed:", err);
+      alert("Could not download the GPX file. Check the database connection.");
+    }
+  });
 
   function row(label, valueHtml) {
     return `<div class="wk-row"><span class="wk-row-label">${label}</span><span class="wk-row-value">${valueHtml}</span></div>`;
@@ -334,20 +374,22 @@
       row("Leader:", leaderValue),
       phoneHtml ? row("Phone:", phoneHtml) : "",
       it.kind === "summer" && clean(it.contact) ? row("Booking / contact:", esc(clean(it.contact))) : "",
-      it.coords ? row("Meeting point:", `<a href="${esc(it.coords.url)}" target="_blank" rel="noopener noreferrer">${esc(it.coords.text)} &#x2197;</a>`)
+      it.coords ? row("Meeting point:", `<a href="${esc(it.coords.url)}" target="_blank" rel="noopener noreferrer">${esc(it.coords.text)} ↗</a>`)
         : (clean(it.meeting) ? row("Meeting point:", esc(clean(it.meeting))) : ""),
-      it.wis ? row("Route map:", `<a href="${esc(it.wis)}" target="_blank" rel="noopener noreferrer">Walks In Spain &#x2197;</a>`) : "",
+      it.wis ? row("Route map:", `<a href="${esc(it.wis)}" target="_blank" rel="noopener noreferrer">Walks In Spain ↗</a>`) : "",
+      it.kind === "walk" && it.gpxName && it.walkId
+        ? row("GPX route:", `<a href="#" data-gpx-download="${esc(it.walkId)}" data-gpx-name="${esc(it.gpxName)}">Download GPX ↓</a>`) : "",
     ].join("");
 
     const directions = it.kind === "walk" && clean(it.directions)
       ? `<div class="wk-section">Driving directions</div><div class="wk-dirs">${esc(clean(it.directions))}</div>` : "";
-    const dogs = it.kind === "walk" && clean(it.dogs) ? `<div class="wk-dogs">&#x1f43e; ${esc(clean(it.dogs))}</div>` : "";
+    const dogs = it.kind === "walk" && clean(it.dogs) ? `<div class="wk-dogs">🐾 ${esc(clean(it.dogs))}</div>` : "";
 
     return `
       <div class="wk-pop-head">
         <button type="button" class="wk-close" data-close aria-label="Close">×</button>
         <h3 id="wk-modal-title">${esc(it.name)}</h3>
-        <div class="wk-pop-date">&#x1f4c5; ${esc(when)}</div>
+        <div class="wk-pop-date">📅 ${esc(when)}</div>
       </div>
       <div class="wk-pop-body">
         ${statsHtml}
@@ -425,6 +467,7 @@
     const walksApp = initializeApp(walksConfig, "wkWalks");
     const calDb = getDatabase(calApp);
     const walksDb = getDatabase(walksApp);
+    walksDbRef = walksDb;
     Promise.allSettled([signInAnonymously(getAuth(calApp)), signInAnonymously(getAuth(walksApp))]).then(() => {
       onValue(ref(calDb, "walk_bookings"), (s) => { bookings = s.val() || {}; loaded = true; render(); }, showError);
       onValue(ref(calDb, "social_events"), (s) => { socials = s.val() || {}; render(); }, showError);
