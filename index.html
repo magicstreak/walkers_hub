@@ -1,252 +1,715 @@
-<!-- CBMW Walkers Hub: paste the whole file into one WordPress "Custom HTML" block -->
-<style>
-    .hub-wrap {
-        --bg-color: #f7f8fa;
-        --card-bg: #ffffff;
-        --card-border: #e4e4e7;
-        --card-border-hover: #cbd5e1;
-        --text-primary: #0f172a;
-        --text-secondary: #64748b;
-        --focus-ring: #2563eb;
-        --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-        --card-shadow-hover: 0 14px 28px -8px rgba(15, 23, 42, 0.14), 0 4px 8px -4px rgba(15, 23, 42, 0.08);
-        background: var(--bg-color);
-        color: var(--text-primary);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        padding: 2.5rem 0 3rem;
-    }
-    .hub-wrap *, .hub-wrap *::before, .hub-wrap *::after { box-sizing: border-box; }
-    .hub-container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
+<!doctype html>
+<html lang="en">
 
-    /* Cards */
-    .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    .hub-card {
-        position: relative;
-        overflow: hidden;
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        border-radius: 14px;
-        padding: 2rem 1.75rem 1.75rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.9rem;
-        text-decoration: none;
-        color: inherit;
-        box-shadow: var(--card-shadow);
-        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaders Database</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #2d5b3e;
+      --primary-hover: #234a31;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --amber-bg: #fef3c7;
+      --amber-text: #92400e;
+      --green-bg: #dcfce7;
+      --green-text: #166534;
+      --red: #b91c1c;
+      --radius-panel: 14px;
+      --radius-card: 10px;
+      --shadow-panel: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --shadow-float: 0 16px 32px -8px rgba(15, 23, 42, 0.25);
     }
-    /* Coloured top edge for each card */
-    .hub-card::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 3px;
-        background: var(--accent, #94a3b8);
-    }
-    .hub-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-    .hub-tag {
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--accent, #64748b);
-        background: color-mix(in srgb, var(--accent, #64748b) 10%, white);
-        padding: 0.25rem 0.55rem;
-        border-radius: 999px;
-        white-space: nowrap;
-    }
-    .hub-icon {
-        background: color-mix(in srgb, var(--accent, #64748b) 12%, white);
-        color: var(--accent, #475569);
-        width: 48px; height: 48px;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 12px;
-        flex-shrink: 0;
-        transition: background 0.2s ease, color 0.2s ease;
-    }
-    .hub-icon svg { width: 24px; height: 24px; }
-    .hub-card h2 { font-size: 1.2rem; font-weight: 650; letter-spacing: -0.01em; color: var(--text-primary); margin: 0.25rem 0 0; }
-    .hub-card p { color: var(--text-secondary); font-size: 0.93rem; line-height: 1.6; margin: 0; }
+    * { box-sizing: border-box; }
 
-    /* Linked cards behave like buttons */
-    a.hub-card { cursor: pointer; }
-    a.hub-card:hover { transform: translateY(-4px); border-color: var(--card-border-hover); box-shadow: var(--card-shadow-hover); }
-    a.hub-card:hover .hub-icon { background: var(--accent); color: #ffffff; }
-    a.hub-card:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
-    .hub-open {
-        margin-top: auto;
-        padding-top: 0.5rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--accent);
+    body {
+      font-family: "Google Sans", system-ui, -apple-system, sans-serif;
+      background: #f6f5f0;
+      color: var(--text);
+      margin: 0;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    a.hub-card:hover .hub-open { text-decoration: underline; }
 
-    /* Back link and embedded app view */
-    .hub-back { display: inline-block; margin: 1rem 0 15px; color: #4a5568; text-decoration: none; font-size: 14px; font-weight: 500; }
-    .hub-frame { width: 100%; height: calc(100vh - 60px); min-height: 700px; border: none; border-radius: 12px; box-shadow: var(--card-shadow-hover); background: #fff; }
-
-    @media (prefers-reduced-motion: reduce) {
-        .hub-card, .hub-icon { transition: none; }
-        a.hub-card:hover { transform: none; }
+    .page { width: 100%; max-width: 1100px; }
+    .page-header { position: relative; padding-left: 120px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
+    .page-logo { position: absolute; top: 0; left: 0; height: 100px; width: auto; }
+    @media (max-width: 600px) {
+      .page-header { padding-left: 0; min-height: 0; display: block; }
+      .page-logo { position: static; display: block; height: 100px; margin: 0 auto 8px; }
     }
-</style>
+    .page-header { text-align: center; margin-bottom: 24px; }
+    .page-header h1 { margin: 0 0 6px; font-size: 1.8rem; color: var(--primary); }
+    .page-header p { margin: 0; color: var(--text-muted); }
 
-<div class="hub-wrap">
-  <div class="hub-container">
-    <div id="hub-cards">
-      <main class="hub-grid">
+    .panel {
+      background: #fff;
+      border-radius: var(--radius-panel);
+      box-shadow: var(--shadow-panel);
+      padding: 20px;
+    }
 
-        <!-- Walk Programme: opens the scheduler in walker view inside the hub -->
-        <a href="?view=programme-scheduler" class="hub-card" style="--accent: #0f766e;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-            </div>
-            <span class="hub-tag">Plan</span>
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .toolbar input[type="search"], .toolbar select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font: inherit;
+      min-width: 200px;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:hover { background: #f1f5f9; }
+    .btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { color: var(--red); border-color: #fca5a5; }
+    .btn-small { padding: 4px 10px; font-size: 0.85rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      background: var(--bg-muted, #f8fafc);
+    }
+    .card h2 { margin: 0 0 10px; font-size: 1.05rem; color: var(--primary); }
+    .request-item { padding: 10px 0; border-top: 1px solid var(--border); }
+    .request-item:first-of-type { border-top: none; }
+    .request-item .who { font-weight: 600; }
+    .request-item .meta { color: var(--text-muted); font-size: 0.85rem; margin: 2px 0 6px; }
+    .change-list { margin: 0 0 8px; padding-left: 18px; font-size: 0.9rem; }
+    .change-list li { margin-bottom: 2px; }
+    .request-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .table-wrap { overflow-x: auto; }
+    .leaders-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .leaders-table th, .leaders-table td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    .leaders-table th { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .leaders-table tr.is-me td { background: #f0f9f3; }
+    .leaders-table a { color: var(--primary); }
+    .id-cell { font-variant-numeric: tabular-nums; color: var(--text-muted); }
+    .muted { color: var(--text-muted); }
+
+    .pill {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .pill-whatsapp { background: var(--green-bg); color: var(--green-text); }
+    .pill-pending { background: var(--amber-bg); color: var(--amber-text); }
+    .pill-approved { background: var(--green-bg); color: var(--green-text); }
+    .pill-rejected { background: #fee2e2; color: var(--red); }
+
+    .empty { text-align: center; color: var(--text-muted); padding: 24px 0; }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal[hidden] { display: none; }
+    .modal-card {
+      background: #fff;
+      color: var(--text);
+      border-radius: var(--radius-panel);
+      box-shadow: var(--shadow-float);
+      padding: 22px;
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-card h2 { margin: 0 0 4px; color: var(--primary); }
+    .modal-card .lede { margin: 0 0 16px; color: var(--text-muted); font-size: 0.9rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+    .form-field input, .form-field select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+    .form-field input:disabled { background: #f1f5f9; color: var(--text-muted); }
+    .form-field .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+    .form-error {
+      margin: 12px 0 0;
+      color: var(--red);
+      font-size: 0.9rem;
+    }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+    /* Phone: stack the form and let the table scroll sideways */
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .toolbar input[type="search"], .toolbar select { min-width: 0; width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header class="page-header">
+      <img class="page-logo" src="data:image/png;base64,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" alt="Costa Blanca Mountain Walkers logo" />
+      <h1 id="page-title">Leaders Database</h1>
+      <p id="page-subtitle"></p>
+    </header>
+
+    <main class="panel">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <input type="search" id="search" placeholder="Search name, ID or email" aria-label="Search leaders" />
+          <div id="picker-wrap" class="toolbar-group" hidden>
+            <label for="leader-picker" class="muted">I am</label>
+            <select id="leader-picker" aria-label="Choose your name"></select>
           </div>
-          <h2>Walk Programme</h2>
-          <p>View upcoming seasonal walks. Easily filter by dates, starting points, and group leaders.</p>
-          <span class="hub-open">Open programme →</span>
-        </a>
-
-        <!-- Walk Route Database -->
-        <a href="?view=walks-database" class="hub-card" style="--accent: #2563eb;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                <line x1="8" y1="2" x2="8" y2="18"></line>
-                <line x1="16" y1="6" x2="16" y2="22"></line>
-              </svg>
-            </div>
-            <span class="hub-tag">Explore</span>
-          </div>
-          <h2>Walk Route Database</h2>
-          <p>Browse and explore the verified database catalog of CBMW walking routes.</p>
-          <span class="hub-open">Browse routes →</span>
-        </a>
-
-        <!-- Walk Grading: placeholder until its page is linked -->
-        <div class="hub-card" style="--accent: #d97706;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-            </div>
-            <span class="hub-tag">Explore</span>
-          </div>
-          <h2>Walk Grading</h2>
-          <p>From easy strolls to strenuous mountain climbs. Find the perfect match for your fitness level.</p>
         </div>
-
-        <!-- Safety: placeholder -->
-        <div class="hub-card" style="--accent: #dc2626;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <span class="hub-tag">Prepare</span>
-          </div>
-          <h2>Safety Advice and Insurance</h2>
-          <p>Important advice on safety conventions, liability insurance and mandatory equipment.</p>
+        <div class="toolbar-group">
+          <button type="button" class="btn btn-primary" id="add-leader" hidden>+ Add leader</button>
         </div>
+      </div>
 
-        <!-- Library: placeholder -->
-        <div class="hub-card" style="--accent: #7c3aed;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"></path>
-              </svg>
-            </div>
-            <span class="hub-tag">Resources</span>
-          </div>
-          <h2>Library</h2>
-          <p>Access documentation templates, safety guidelines, and leadership files.</p>
+      <section class="card" id="pending-panel" hidden>
+        <h2>Change requests waiting for approval <span class="muted" id="pending-count"></span></h2>
+        <div id="pending-list"></div>
+      </section>
+
+      <section class="card" id="my-requests-panel" hidden>
+        <h2>My change requests</h2>
+        <div id="my-requests-list"></div>
+      </section>
+
+      <div class="table-wrap">
+        <table class="leaders-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone 1</th>
+              <th>Phone 2</th>
+              <th>Email</th>
+              <th>WhatsApp</th>
+              <th>Linked leader</th>
+              <th class="actions-col" id="actions-head" hidden></th>
+            </tr>
+          </thead>
+          <tbody id="leaders-body"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="empty-note" hidden>No leaders match your search.</p>
+    </main>
+  </div>
+
+  <!-- Add / edit / request-change dialog -->
+  <div class="modal" id="leader-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title"></h2>
+      <p class="lede" id="modal-lede"></p>
+      <form id="leader-form" novalidate>
+        <div class="form-grid" id="form-fields"></div>
+        <p class="form-error" id="form-error" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="btn" id="modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-submit">Save</button>
         </div>
-
-        <!-- WhatsApp: placeholder until the channel link is added -->
-        <div class="hub-card" style="--accent: #25d366;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.9-.9L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5z"></path>
-              </svg>
-            </div>
-            <span class="hub-tag">Stay in touch</span>
-          </div>
-          <h2>WhatsApp</h2>
-          <p>Sign up to our WhatsApp channel to receive alerts.</p>
-        </div>
-
-        <!-- Join: placeholder -->
-        <div class="hub-card" style="--accent: #0891b2;">
-          <div class="hub-card-top">
-            <div class="hub-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <line x1="19" y1="8" x2="19" y2="14"></line>
-                <line x1="22" y1="11" x2="16" y2="11"></line>
-              </svg>
-            </div>
-            <span class="hub-tag">New here</span>
-          </div>
-          <h2>Join us on a Walk</h2>
-          <p>New to the area? Learn how the community operates and how to purchase a fob.</p>
-        </div>
-
-      </main>
-    </div>
-
-    <!-- Opened when a card links to an app -->
-    <div id="hub-frame-wrap" style="display: none;">
-      <a href="?" class="hub-back">← Back to Home Page</a>
-      <iframe id="hub-frame" class="hub-frame" src="" title="CBMW app"></iframe>
+      </form>
     </div>
   </div>
-</div>
 
-<script>
-  (function () {
-    // Published address for each card, opened in walker view.
-    const APPS = {
-      "programme-scheduler": "https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker",
-      "walks-database":      "https://magicstreak.github.io/CBMW-Programme-Planner/?view=walker"
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    /* ========================================================= SETUP ========================================================= */
+    // Same Firebase project as the Walk Scheduler: reads walk_bookings for delete checks, reads/writes leaders and leader_requests.
+    const firebaseConfig = {
+      apiKey: "AIzaSyC0hEmdWHSlBkdnxrQiNt_RITYsbj3wvi0",
+      authDomain: "cbmw-walk-scheduler.firebaseapp.com",
+      databaseURL: "https://cbmw-walk-scheduler-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "cbmw-walk-scheduler",
+      storageBucket: "cbmw-walk-scheduler.firebasestorage.app",
+      messagingSenderId: "108766389213",
+      appId: "1:108766389213:web:cded7ada3d32874b380c34",
+      measurementId: "G-QFS6HHL007"
     };
 
-    const current = new URLSearchParams(window.location.search).get("view");
-    if (current && APPS[current]) {
-      document.getElementById("hub-cards").style.display = "none";
-      // Full-screen app view: the page itself stops scrolling, so only the app scrolls
-      const wrap = document.getElementById("hub-frame-wrap");
-      Object.assign(wrap.style, {
-        position: "fixed", top: "0", left: "0", right: "0", bottom: "0",
-        zIndex: "99999", background: "#fff", padding: "8px 12px", boxSizing: "border-box",
-        overflow: "hidden", display: "flex", flexDirection: "column"
-      });
-      // The frame fills the space left under the back link, so nothing sits below the phone's visible area
-      wrap.querySelector(".hub-back").style.flex = "0 0 auto";
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
-      const frame = document.getElementById("hub-frame");
-      frame.style.flex = "1 1 auto";
-      frame.style.height = "auto";
-      frame.style.minHeight = "0";
-      frame.style.boxShadow = "none";
-      frame.src = APPS[current];
+    // View comes from the hosting page: ?view=walker | leader | admin (default walker).
+    // Leader view also takes ?leader_id=101 so the page knows who is asking. Without it, the leader picks their name.
+    const params = new URLSearchParams(window.location.search);
+    const VIEW = (() => {
+      const v = params.get("view") || window.LEADERS_VIEW || "walker";
+      return ["walker", "leader", "admin"].includes(v) ? v : "walker";
+    })();
+    const isAdmin = VIEW === "admin";
+    const isLeader = VIEW === "leader";
+    let myLeaderId = isLeader ? (params.get("leader_id") || "") : "";
+
+    let db = null;
+    let leaders = [];          // sorted by leader_id
+    let requests = {};         // leader_requests/{id}
+    let bookings = {};         // walk_bookings (read only, used for delete checks)
+
+    /* ========================================================= HELPERS ========================================================= */
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+      }[c]));
     }
-  })();
-</script>
+
+    const EDITABLE_FIELDS = [
+      { key: "first_name", label: "First name", required: true },
+      { key: "surname", label: "Surname", required: true },
+      { key: "phone_1", label: "Phone 1", type: "tel", required: true },
+      { key: "phone_2", label: "Phone 2", type: "tel" },
+      { key: "email_add", label: "Email", type: "email", required: true },
+      { key: "whats_app", label: "WhatsApp preferred", type: "whatsapp" },
+      { key: "linked_leader", label: "Linked leader", type: "leader", hint: "Another leader, e.g. a co-leader" },
+    ];
+    const ID_FIELD = { key: "leader_id", label: "Leader ID", required: true };
+    const CHANGE_LABELS = Object.fromEntries([ID_FIELD, ...EDITABLE_FIELDS].map((f) => [f.key, f.label]));
+
+    const leaderById = (id) => leaders.find((l) => l.leader_id === id) || null;
+    const fullName = (l) => (l ? `${l.first_name || ""} ${l.surname || ""}`.trim() : "");
+    const str = (v) => String(v ?? "").trim();
+    const pendingFor = (id) => Object.values(requests).filter((r) => r && r.status === "pending" && r.leader_id === id);
+    const pendingRequests = () => Object.values(requests).filter((r) => r && r.status === "pending")
+      .sort((a, b) => String(a.requested_at).localeCompare(String(b.requested_at)));
+
+    function nextLeaderId() {
+      const max = leaders.reduce((m, l) => Math.max(m, Number(l.leader_id) || 0), 100);
+      return String(max + 1);
+    }
+
+    // Walk bookings that point at this leader, by ID or (older bookings) by name
+    function bookingCountFor(leader) {
+      const name = fullName(leader);
+      return Object.values(bookings).filter(Boolean).filter((b) =>
+        b.leader_id ? b.leader_id === leader.leader_id : (b.leader_name && b.leader_name === name)
+      ).length;
+    }
+    function linkedFromCount(leader) {
+      return leaders.filter((l) => l.linked_leader === leader.leader_id).length;
+    }
+
+    /* ========================================================= RENDER ========================================================= */
+    function setupPage() {
+      const titles = {
+        walker: ["Leaders Database", ""],
+        leader: ["Leaders Database", "You can request changes to your own details. An admin approves each change."],
+        admin: ["Leaders Database", "Add, edit or remove leaders, and approve or reject change requests from leaders."],
+      };
+      document.getElementById("page-title").textContent = titles[VIEW][0];
+      document.getElementById("page-subtitle").textContent = titles[VIEW][1];
+      document.getElementById("add-leader").hidden = !isAdmin;
+      document.getElementById("actions-head").hidden = !isAdmin;
+      document.getElementById("pending-panel").hidden = !isAdmin;
+      document.getElementById("picker-wrap").hidden = !isLeader || !!params.get("leader_id");
+    }
+
+    function renderPicker() {
+      if (!isLeader) return;
+      const select = document.getElementById("leader-picker");
+      const current = myLeaderId;
+      select.innerHTML = `<option value="" ${current ? "" : "selected"} disabled>Choose your name</option>` +
+        leaders.map((l) => `<option value="${escapeHtml(l.leader_id)}" ${l.leader_id === current ? "selected" : ""}>${escapeHtml(fullName(l))} (${escapeHtml(l.leader_id)})</option>`).join("");
+    }
+
+    function renderTable() {
+      const term = str(document.getElementById("search").value).toLowerCase();
+      const rows = leaders.filter((l) => {
+        if (!term) return true;
+        return [l.leader_id, fullName(l), l.email_add, l.phone_1, l.phone_2].join(" ").toLowerCase().includes(term);
+      });
+      document.getElementById("empty-note").hidden = rows.length > 0;
+
+      document.getElementById("leaders-body").innerHTML = rows.map((l) => {
+        const linked = leaderById(l.linked_leader);
+        const mine = isLeader && l.leader_id === myLeaderId;
+        const waiting = pendingFor(l.leader_id).length > 0;
+
+        let actions = "";
+        if (isAdmin) {
+          actions = `<button type="button" class="btn btn-small" data-action="edit" data-id="${escapeHtml(l.leader_id)}">Edit</button>
+            <button type="button" class="btn btn-small btn-danger" data-action="delete" data-id="${escapeHtml(l.leader_id)}">Delete</button>`;
+        }
+        // Leader view: the request button sits beside the leader's own name, so it shows without scrolling
+        const requestBtn = mine
+          ? ` <button type="button" class="btn btn-small" data-action="request" data-id="${escapeHtml(l.leader_id)}">Request change</button>`
+          : "";
+
+        return `<tr class="${mine ? "is-me" : ""}">
+          <td class="id-cell">${escapeHtml(l.leader_id)}</td>
+          <td>${escapeHtml(fullName(l))}${mine ? ` <span class="muted">(you)</span>` : ""}${waiting && VIEW !== "walker" ? ` <span class="pill pill-pending">Change pending</span>` : ""}${requestBtn}</td>
+          <td>${l.phone_1 ? `<a href="tel:${escapeHtml(l.phone_1.replace(/[^\d+]/g, ""))}">${escapeHtml(l.phone_1)}</a>` : "–"}</td>
+          <td>${l.phone_2 ? `<a href="tel:${escapeHtml(l.phone_2.replace(/[^\d+]/g, ""))}">${escapeHtml(l.phone_2)}</a>` : "–"}</td>
+          <td>${l.email_add ? `<a href="mailto:${escapeHtml(l.email_add)}">${escapeHtml(l.email_add)}</a>` : "–"}</td>
+          <td>${l.whats_app === "y" ? `<span class="pill pill-whatsapp">WhatsApp</span>` : ""}</td>
+          <td>${linked ? `${escapeHtml(fullName(linked))} <span class="muted">(${escapeHtml(linked.leader_id)})</span>` : (l.linked_leader ? `<span class="muted">${escapeHtml(l.linked_leader)} (missing)</span>` : "–")}</td>
+          ${isAdmin ? `<td class="actions-cell">${actions}</td>` : ""}
+        </tr>`;
+      }).join("");
+
+      renderPicker();
+    }
+
+    function changeListHtml(request) {
+      return `<ul class="change-list">${Object.entries(request.changes || {}).map(([key, after]) => {
+        const before = request.before?.[key];
+        return `<li><strong>${escapeHtml(CHANGE_LABELS[key] || key)}:</strong> ${escapeHtml(before || "(blank)")} → ${escapeHtml(after || "(blank)")}</li>`;
+      }).join("")}</ul>`;
+    }
+
+    function renderPending() {
+      if (!isAdmin) return;
+      const list = pendingRequests();
+      document.getElementById("pending-count").textContent = list.length ? `(${list.length})` : "";
+      document.getElementById("pending-list").innerHTML = list.length ? list.map((r) => {
+        const who = leaderById(r.leader_id);
+        return `<div class="request-item">
+          <div class="who">${escapeHtml(fullName(who) || "Unknown leader")} <span class="muted">(ID ${escapeHtml(r.leader_id)})</span></div>
+          <div class="meta">Requested ${escapeHtml(formatDate(r.requested_at))}</div>
+          ${changeListHtml(r)}
+          <div class="request-actions">
+            <button type="button" class="btn btn-small btn-primary" data-action="approve" data-request="${escapeHtml(r.request_id)}">Approve</button>
+            <button type="button" class="btn btn-small btn-danger" data-action="reject" data-request="${escapeHtml(r.request_id)}">Reject</button>
+          </div>
+        </div>`;
+      }).join("") : `<p class="empty" style="padding:8px 0">No change requests waiting.</p>`;
+    }
+
+    function renderMyRequests() {
+      const panel = document.getElementById("my-requests-panel");
+      if (!isLeader || !myLeaderId) { panel.hidden = true; return; }
+      const mine = Object.values(requests).filter((r) => r && r.leader_id === myLeaderId)
+        .sort((a, b) => String(b.requested_at).localeCompare(String(a.requested_at)));
+      panel.hidden = mine.length === 0;
+      document.getElementById("my-requests-list").innerHTML = mine.map((r) => `
+        <div class="request-item">
+          <div class="meta">Requested ${escapeHtml(formatDate(r.requested_at))}
+            <span class="pill pill-${escapeHtml(r.status)}">${escapeHtml(statusLabel(r.status))}</span></div>
+          ${changeListHtml(r)}
+          ${r.status === "rejected" && r.reason ? `<div class="meta">Reason: ${escapeHtml(r.reason)}</div>` : ""}
+        </div>`).join("");
+    }
+
+    function statusLabel(status) {
+      return { pending: "Waiting for approval", approved: "Approved", rejected: "Rejected" }[status] || status;
+    }
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return isNaN(d) ? "" : d.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    }
+
+    function renderAll() {
+      renderTable();
+      renderPending();
+      renderMyRequests();
+    }
+
+    /* ========================================================= DIALOG ========================================================= */
+    const modal = document.getElementById("leader-modal");
+    const form = document.getElementById("leader-form");
+    let dialogMode = null;     // "create" | "edit" | "request"
+    let dialogLeader = null;   // leader being edited or requested
+
+    function fieldHtml(field, value, disabled) {
+      const id = `f-${field.key}`;
+      const val = escapeHtml(value ?? "");
+      let control;
+      if (field.type === "whatsapp") {
+        control = `<select id="${id}" name="${field.key}"><option value="n" ${value !== "y" ? "selected" : ""}>No</option><option value="y" ${value === "y" ? "selected" : ""}>Yes</option></select>`;
+      } else if (field.type === "leader") {
+        const options = leaders
+          .filter((l) => !dialogLeader || l.leader_id !== dialogLeader.leader_id)
+          .map((l) => `<option value="${escapeHtml(l.leader_id)}" ${l.leader_id === value ? "selected" : ""}>${escapeHtml(fullName(l))} (${escapeHtml(l.leader_id)})</option>`).join("");
+        control = `<select id="${id}" name="${field.key}"><option value="">None</option>${options}</select>`;
+      } else {
+        const type = field.type || "text";
+        control = `<input id="${id}" name="${field.key}" type="${type}" value="${val}" ${disabled ? "disabled" : ""} autocomplete="off" />`;
+      }
+      return `<div class="form-field ${field.type === "leader" || field.key === "email_add" ? "full" : ""}">
+        <label for="${id}">${escapeHtml(field.label)}${field.required ? " *" : ""}</label>
+        ${control}
+        ${field.hint ? `<div class="hint">${escapeHtml(field.hint)}</div>` : ""}
+      </div>`;
+    }
+
+    function openDialog(mode, leader = null) {
+      dialogMode = mode;
+      dialogLeader = leader;
+      const title = document.getElementById("modal-title");
+      const lede = document.getElementById("modal-lede");
+      const submit = document.getElementById("modal-submit");
+      const error = document.getElementById("form-error");
+      error.hidden = true;
+      error.textContent = "";
+
+      let fields = [];
+      if (mode === "create") {
+        title.textContent = "Add leader";
+        lede.textContent = "Creates a new leader in the database.";
+        submit.textContent = "Add leader";
+        fields = [ID_FIELD, ...EDITABLE_FIELDS];
+      } else if (mode === "edit") {
+        title.textContent = `Edit ${fullName(leader)}`;
+        lede.textContent = "Admin changes apply straight away.";
+        submit.textContent = "Save changes";
+        fields = [ID_FIELD, ...EDITABLE_FIELDS];
+      } else {
+        title.textContent = `Request a change for ${fullName(leader)}`;
+        lede.textContent = "Your changes are sent to an admin for approval. Your details stay the same until then.";
+        submit.textContent = "Send request";
+        fields = EDITABLE_FIELDS;
+      }
+
+      document.getElementById("form-fields").innerHTML = fields.map((f) => {
+        const value = mode === "create"
+          ? (f.key === "leader_id" ? nextLeaderId() : (f.key === "whats_app" ? "n" : ""))
+          : leader?.[f.key] ?? "";
+        return fieldHtml(f, value, f.key === "leader_id" && mode === "edit");
+      }).join("");
+      modal.hidden = false;
+      document.getElementById(mode === "create" ? "f-leader_id" : "f-first_name")?.focus();
+    }
+
+    function closeDialog() {
+      modal.hidden = true;
+      dialogMode = null;
+      dialogLeader = null;
+    }
+
+    function showError(message) {
+      const error = document.getElementById("form-error");
+      error.textContent = message;
+      error.hidden = false;
+    }
+
+    // Reads and checks the form; returns the cleaned record or null (after showing an error)
+    function readForm(mode) {
+      const get = (key) => str(form.elements[key]?.value);
+      const record = {};
+      if (mode !== "request") record.leader_id = get("leader_id");
+      for (const f of EDITABLE_FIELDS) record[f.key] = get(f.key);
+      if (record.whats_app !== "y") record.whats_app = "n";
+
+      if (mode !== "request") {
+        if (record.leader_id && !/^\d+$/.test(record.leader_id)) return showError("Leader ID must be a number."), null;
+        if (mode === "create" && leaderById(record.leader_id)) return showError(`Leader ID ${record.leader_id} is already used.`), null;
+      }
+      for (const f of [...(mode === "request" ? [] : [ID_FIELD]), ...EDITABLE_FIELDS]) {
+        if (f.required && !record[f.key]) return showError(`${f.label} is required.`), null;
+      }
+      if (!/^[+\d][\d\s()-]{5,}$/.test(record.phone_1)) return showError("Phone 1 should be a phone number."), null;
+      if (record.phone_2 && !/^[+\d][\d\s()-]{5,}$/.test(record.phone_2)) return showError("Phone 2 should be a phone number, or left blank."), null;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(record.email_add)) return showError("Email does not look valid."), null;
+      if (record.linked_leader) {
+        const selfId = mode === "request" ? dialogLeader.leader_id : record.leader_id;
+        if (record.linked_leader === selfId) return showError("A leader cannot be linked to themselves."), null;
+        if (!leaderById(record.linked_leader)) return showError("The linked leader does not exist."), null;
+      }
+      return record;
+    }
+
+    /* ========================================================= ACTIONS ========================================================= */
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!dialogMode || !db) return;
+      const mode = dialogMode;
+      const record = readForm(mode);
+      if (!record) return;
+
+      try {
+        if (mode === "create" || mode === "edit") {
+          const waitingFor = Object.values(requests).filter((r) => r && r.status === "pending" && String(r.leader_id) === String(record.leader_id));
+          if (mode === "edit" && waitingFor.length && !confirm("This leader has a change waiting for approval. Save anyway?")) return;
+          await set(ref(db, "leaders/" + record.leader_id), record);
+        } else {
+          const current = dialogLeader;
+          const changes = {};
+          const before = {};
+          for (const f of EDITABLE_FIELDS) {
+            const was = f.key === "whats_app" ? (current.whats_app === "y" ? "y" : "n") : str(current[f.key]);
+            if (record[f.key] !== was) {
+              changes[f.key] = record[f.key];
+              before[f.key] = was;
+            }
+          }
+          if (!Object.keys(changes).length) return showError("No changes to send. Change a field first."), undefined;
+          if (pendingFor(current.leader_id).length) {
+            return showError("You already have a change waiting for approval. Ask an admin to review it first."), undefined;
+          }
+          const requestId = `${current.leader_id}_${Date.now()}`;
+          await set(ref(db, "leader_requests/" + requestId), {
+            request_id: requestId,
+            leader_id: current.leader_id,
+            status: "pending",
+            requested_at: new Date().toISOString(),
+            changes,
+            before,
+          });
+        }
+        closeDialog();
+      } catch (err) {
+        console.error("Save failed:", err);
+        showError("Could not save. Check the database connection and permissions.");
+      }
+    });
+
+    document.getElementById("modal-cancel").addEventListener("click", closeDialog);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeDialog(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) closeDialog(); });
+
+    document.getElementById("add-leader").addEventListener("click", () => openDialog("create"));
+    document.getElementById("search").addEventListener("input", renderTable);
+
+    document.getElementById("leader-picker").addEventListener("change", (e) => {
+      myLeaderId = e.target.value;
+      renderAll();
+    });
+
+    // Row buttons (edit, delete, request change)
+    document.getElementById("leaders-body").addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn) return;
+      const leader = leaderById(btn.dataset.id);
+      if (!leader) return;
+
+      if (btn.dataset.action === "edit" && isAdmin) openDialog("edit", leader);
+      if (btn.dataset.action === "request" && isLeader) openDialog("request", leader);
+      if (btn.dataset.action === "delete" && isAdmin) {
+        const usedBy = bookingCountFor(leader);
+        const linkedBy = linkedFromCount(leader);
+        const notes = [];
+        if (usedBy) notes.push(`${usedBy} walk booking(s) use this leader. Their name stays on the booking, but the contact details will no longer show.`);
+        if (linkedBy) notes.push(`${linkedBy} leader(s) are linked to this leader. Their link will show as missing.`);
+        const pendingReqs = Object.values(requests).filter((r) => r && r.status === "pending" && String(r.leader_id) === String(leader.leader_id));
+        if (pendingReqs.length) notes.push(`${pendingReqs.length} change request(s) from this leader will also be deleted.`);
+        const message = `Delete ${fullName(leader)} (ID ${leader.leader_id})?${notes.length ? "\n\n" + notes.join("\n") : ""}`;
+        if (!confirm(message)) return;
+        try {
+          await remove(ref(db, "leaders/" + leader.leader_id));
+          await Promise.all(pendingReqs.map((r) => remove(ref(db, "leader_requests/" + r.request_id)))).catch(() => {});
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("Could not delete. Check the database permissions.");
+        }
+      }
+    });
+
+    // Pending request buttons (admin)
+    document.getElementById("pending-list").addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn || !isAdmin) return;
+      const request = requests[btn.dataset.request];
+      if (!request || request.status !== "pending") return;
+
+      try {
+        if (btn.dataset.action === "approve") {
+          const leader = leaderById(request.leader_id);
+          if (!leader) return alert("This leader no longer exists, so the change cannot be applied. Reject the request instead.");
+          if (!confirm(`Approve this change for ${fullName(leader)}?`)) return;
+          await update(ref(db, "leaders/" + request.leader_id), request.changes);
+          await update(ref(db, "leader_requests/" + request.request_id), {
+            status: "approved",
+            reviewed_at: new Date().toISOString(),
+          });
+        }
+        if (btn.dataset.action === "reject") {
+          const reason = prompt("Reason for rejecting (optional):", "");
+          if (reason === null) return;
+          await update(ref(db, "leader_requests/" + request.request_id), {
+            status: "rejected",
+            reason: str(reason),
+            reviewed_at: new Date().toISOString(),
+          });
+        }
+      } catch (err) {
+        console.error("Review failed:", err);
+        alert("Could not update the request. Check the database permissions.");
+      }
+    });
+
+    /* ========================================================= DATA ========================================================= */
+    function start() {
+      setupPage();
+      if (!db) {
+        document.getElementById("leaders-body").innerHTML = `<tr><td colspan="8" class="empty">The database could not be reached.</td></tr>`;
+        return;
+      }
+      onValue(ref(db, "leaders"), (snapshot) => {
+        const data = snapshot.val() || {};
+        leaders = Object.values(data).filter(Boolean)
+          .sort((a, b) => Number(a.leader_id) - Number(b.leader_id));
+        renderAll();
+      }, (error) => console.error("Unable to load leaders:", error));
+
+      onValue(ref(db, "leader_requests"), (snapshot) => {
+        requests = snapshot.val() || {};
+        renderAll();
+      }, (error) => console.error("Unable to load change requests:", error));
+
+      // Read only: used to warn before a leader is deleted
+      onValue(ref(db, "walk_bookings"), (snapshot) => {
+        bookings = snapshot.val() || {};
+      }, (error) => console.error("Unable to load bookings:", error));
+    }
+
+    try {
+      const app = initializeApp(firebaseConfig, "leadersApp");
+      db = getDatabase(app);
+      const auth = getAuth(app);
+      signInAnonymously(auth).then(start).catch((err) => {
+        console.error("Anonymous sign-in failed:", err);
+        start();
+      });
+    } catch (err) {
+      console.error("Leaders Firebase startup failed.", err);
+      start();
+    }
+  </script>
+</body>
+
+</html>
