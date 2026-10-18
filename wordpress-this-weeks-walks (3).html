@@ -230,6 +230,7 @@
   }
 
   function safeUrl(raw) {
+    if (!clean(raw)) return "";
     try {
       const u = new URL(clean(raw), window.location.href);
       return ["http:", "https:"].includes(u.protocol) ? u.href : "";
