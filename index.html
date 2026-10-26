@@ -140,8 +140,8 @@
           <span class="hub-open">Browse routes →</span>
         </a>
 
-        <!-- Walk Grading: placeholder until its page is linked -->
-        <div class="hub-card" style="--accent: #0f7a45;">
+        <!-- Post Walk Stats: opens the stats app inside the hub -->
+        <a href="?view=post-walk-stats" class="hub-card" style="--accent: #0f7a45;">
           <div class="hub-card-top">
             <div class="hub-icon">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -151,11 +151,10 @@
               </svg>
             </div>
           </div>
-          <h2>Walk Grading</h2>
-          <p>From easy strolls to strenuous mountain climbs. Find the perfect match for your fitness level.</p>
-          <!-- Link: replace the placeholder span with e.g. <a class="hub-open" href="URL">Link text →</a> -->
-          <span class="hub-open">View grading →</span>
-        </div>
+          <h2>Post Walk Stats</h2>
+          <p>View the statistics for walks after they have taken place.</p>
+          <span class="hub-open">View stats →</span>
+        </a>
 
         <!-- Safety: placeholder -->
         <div class="hub-card" style="--accent: #2fb36b;">
@@ -223,7 +222,8 @@
     // Published address for each card, opened in walker view.
     const APPS = {
       "programme-scheduler": "https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker",
-      "walks-database":      "https://magicstreak.github.io/CBMW-Programme-Planner/?view=walker"
+      "walks-database":      "https://magicstreak.github.io/CBMW-Programme-Planner/?view=walker",
+      "post-walk-stats":     "https://magicstreak.github.io/postwalk-stats/"
     };
 
     const current = new URLSearchParams(window.location.search).get("view");
