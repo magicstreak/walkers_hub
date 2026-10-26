@@ -113,6 +113,30 @@
     #wk-levels p { margin: 0 0 8px !important; color: #1f2937 !important; font-size: 0.92rem !important; }
     #wk-levels .wk-levels-close { position: absolute !important; top: 16px !important; right: 18px !important; background: #fff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 6px 12px !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #1e293b !important; cursor: pointer !important; }
 
+
+    /* Layout by screen width: 3 across on PCs (smaller cards), 2 on tablets, compact cards on phones */
+    @media (min-width: 900px) {
+        #wk-root .wk-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
+        #wk-root .wk-img { height: 110px !important; }
+        #wk-root .wk-tag { top: 8px !important; left: 8px !important; }
+        #wk-root .wk-body { padding: 10px 12px 9px !important; gap: 6px !important; }
+        #wk-root .wk-title { font-size: 0.95rem !important; }
+        #wk-root .wk-desc { font-size: 0.82rem !important; -webkit-line-clamp: 2 !important; }
+        #wk-root .wk-meta { font-size: 0.78rem !important; }
+        #wk-root .wk-foot-row { padding: 9px 12px !important; }
+        #wk-root .wk-btn { padding: 8px 12px !important; }
+    }
+    @media (min-width: 561px) and (max-width: 899px) {
+        #wk-root .wk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    }
+    @media (max-width: 560px) {
+        #wk-root .wk-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+        #wk-root .wk-img { height: 120px !important; }
+        #wk-root .wk-body { padding: 12px 14px 10px !important; }
+        #wk-root .wk-desc { -webkit-line-clamp: 2 !important; }
+        #wk-root .wk-foot-row { padding: 10px 14px !important; }
+    }
+
     @media (max-width: 560px) {
         #wk-root .wk-head h2 { font-size: 1.3rem !important; }
         #wk-root .wk-grid { grid-template-columns: 1fr !important; }
