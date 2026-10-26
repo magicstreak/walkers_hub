@@ -56,14 +56,14 @@
     }
     #wk-root .wk-card:hover { box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.28) !important; }
     #wk-root .wk-card:focus-visible { outline: 2px solid var(--primary) !important; outline-offset: 3px !important; }
-    #wk-root .wk-img { position: relative !important; height: 170px !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
+    #wk-root .wk-img { position: relative !important; aspect-ratio: 3 / 2 !important; height: auto !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
     #wk-root .wk-img svg { position: absolute !important; inset: 0 !important; margin: auto !important; width: 60px !important; height: 60px !important; opacity: 0.5 !important; }
     #wk-root .wk-img img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; border: 0 !important; margin: 0 !important; padding: 0 !important; }
     #wk-root .wk-card.wk-summer .wk-img { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
     #wk-root .wk-tag { position: absolute !important; top: 10px !important; left: 10px !important; background: #fffbeb !important; color: #713f12 !important; border-left: 5px solid #eab308 !important; font-size: 0.72rem !important; font-weight: 700 !important; padding: 3px 8px !important; border-radius: 4px !important; }
     #wk-root .wk-body { padding: 14px 16px 12px !important; flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 8px !important; border-bottom: 1px solid #e2e8f0 !important; }
-    #wk-root .wk-title { font-weight: 700 !important; font-size: 1.05rem !important; line-height: 1.3 !important; color: #1e293b !important; }
-    #wk-root .wk-desc { font-size: 0.9rem !important; font-weight: 500 !important; line-height: 1.45 !important; color: #1e293b !important; display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+    #wk-root .wk-title { font-weight: 600 !important; font-size: 1.05rem !important; line-height: 1.3 !important; color: #1e293b !important; }
+    #wk-root .wk-desc { font-size: 0.9rem !important; font-weight: 400 !important; line-height: 1.45 !important; color: #334155 !important; display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
     #wk-root .wk-desc strong { font-weight: 700 !important; color: #1e293b !important; }
     #wk-root .wk-meta { margin-top: auto !important; padding-top: 4px !important; font-size: 0.82rem !important; color: #64748b !important; font-weight: 600 !important; }
     #wk-root .wk-foot-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; padding: 12px 16px !important; }
@@ -71,9 +71,9 @@
     #wk-root .wk-val { display: block !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #1e293b !important; }
     #wk-root .wk-btn { flex: none !important; background: #2d5b3e !important; color: #fff !important; border-radius: 4px !important; padding: 10px 16px !important; font-size: 0.82rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.03em !important; }
     #wk-root .wk-facts { margin-top: auto !important; padding-top: 6px !important; }
-    #wk-root .wk-fact { display: grid !important; grid-template-columns: 84px 1fr !important; column-gap: 6px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 600 !important; line-height: 1.5 !important; color: #0f172a !important; }
-    #wk-root .wk-k { font-weight: 700 !important; color: #1e293b !important; }
-    #wk-root .wk-when-line { font-size: 0.98rem !important; font-weight: 700 !important; color: #1e293b !important; background: #f1f5f9 !important; border-radius: 6px !important; padding: 5px 10px !important; }
+    #wk-root .wk-fact { display: grid !important; grid-template-columns: 84px 1fr !important; column-gap: 6px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 400 !important; line-height: 1.5 !important; color: #334155 !important; }
+    #wk-root .wk-k { font-weight: 600 !important; color: #334155 !important; }
+    #wk-root .wk-when-line { font-size: 0.9rem !important; font-weight: 500 !important; color: #334155 !important; background: none !important; border-radius: 0 !important; padding: 0 !important; }
     #wk-root .wk-card:hover .wk-btn { background: #234a31 !important; }
     #wk-root .wk-status { color: var(--text-muted) !important; margin: 0 !important; }
     #wk-root .wk-foot { margin-top: 14px !important; text-align: center !important; }
@@ -118,21 +118,21 @@
     /* Layout by screen width: 3 across on PCs (smaller cards), 2 on tablets, compact cards on phones */
     @media (min-width: 900px) {
         #wk-root .wk-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
-        #wk-root .wk-img { height: 110px !important; }
-        #wk-root .wk-tag { top: 8px !important; left: 8px !important; }
-        #wk-root .wk-body { padding: 10px 12px 9px !important; gap: 6px !important; }
-        #wk-root .wk-title { font-size: 0.95rem !important; }
-        #wk-root .wk-desc { font-size: 0.82rem !important; -webkit-line-clamp: 2 !important; }
-        #wk-root .wk-meta { font-size: 0.78rem !important; }
-        #wk-root .wk-foot-row { padding: 9px 12px !important; }
-        #wk-root .wk-btn { padding: 8px 12px !important; }
+        #wk-root .wk-img img { object-fit: cover !important; object-position: center !important; }
+        #wk-root .wk-tag { top: 6px !important; left: 6px !important; }
+        #wk-root .wk-body { padding: 8px 10px 7px !important; gap: 4px !important; }
+        #wk-root .wk-title { font-size: 0.9rem !important; line-height: 1.25 !important; }
+        #wk-root .wk-desc { font-size: 0.78rem !important; line-height: 1.35 !important; -webkit-line-clamp: 2 !important; }
+        #wk-root .wk-fact { font-size: 0.78rem !important; line-height: 1.35 !important; grid-template-columns: 70px 1fr !important; }
+        #wk-root .wk-meta { font-size: 0.74rem !important; }
+        #wk-root .wk-foot-row { padding: 7px 10px !important; }
+        #wk-root .wk-btn { padding: 6px 10px !important; font-size: 0.75rem !important; }
     }
     @media (min-width: 561px) and (max-width: 899px) {
         #wk-root .wk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     }
     @media (max-width: 560px) {
         #wk-root .wk-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
-        #wk-root .wk-img { height: 120px !important; }
         #wk-root .wk-body { padding: 12px 14px 10px !important; }
         #wk-root .wk-desc { -webkit-line-clamp: 2 !important; }
         #wk-root .wk-foot-row { padding: 10px 14px !important; }
@@ -317,6 +317,12 @@
       `<div class="wk-fact"><span class="wk-k">Ascent:</span><span>${dash(it.ascent)}</span></div>`,
     ].join("");
     const when_line = [when, clean(it.time), clean(it.duration)].filter(Boolean).join(" · ");
+    function to12(t) {
+      const m = /^(\d{1,2}):(\d{2})/.exec(String(t || "").trim());
+      if (!m) return clean(t);
+      const h = Number(m[1]);
+      return `${h % 12 === 0 ? 12 : h % 12}:${m[2]} ${h < 12 ? "am" : "pm"}`;
+    }
     return `<button type="button" class="wk-card${summer ? " wk-summer" : ""}" data-idx="${idx}">
       <div class="wk-img">
         ${it.image
@@ -330,7 +336,7 @@
         <div class="wk-facts">${detailLines}</div>
       </div>
       <div class="wk-foot-row">
-        <span class="wk-when-line">${esc(when_line)}</span>
+        <span class="wk-when-line">${[when, to12(it.time), clean(it.duration)].filter(Boolean).map(esc).join("<br>")}</span>
         <span class="wk-btn">See details</span>
       </div>
     </button>`;
