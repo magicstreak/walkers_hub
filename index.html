@@ -20,7 +20,7 @@
     .hub-container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
 
     /* Cards: compact, so several fit on one screen */
-    .hub-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+    .hub-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
     /* Tablets: two across. Phones: one across. */
     @media (max-width: 899px) { .hub-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 560px) { .hub-grid { grid-template-columns: 1fr; } }
@@ -29,11 +29,11 @@
         overflow: hidden;
         background: var(--card-bg);
         border: 1px solid var(--card-border);
-        border-radius: 10px;
-        padding: 0.8rem 0.9rem 0.75rem;
+        border-radius: 12px;
+        padding: 1.1rem 1.15rem 1rem;
         display: flex;
         flex-direction: column;
-        gap: 0.45rem;
+        gap: 0.6rem;
         text-decoration: none;
         color: inherit;
         box-shadow: var(--card-shadow);
@@ -49,7 +49,7 @@
     }
     .hub-card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
     .hub-tag {
-        font-size: 0.62rem;
+        font-size: 0.68rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.06em;
@@ -62,13 +62,13 @@
     .hub-icon {
         background: color-mix(in srgb, var(--accent, #1e8a4f) 16%, white);
         color: var(--accent, #1e8a4f);
-        width: 36px; height: 36px;
+        width: 44px; height: 44px;
         display: flex; align-items: center; justify-content: center;
-        border-radius: 8px;
+        border-radius: 10px;
         flex-shrink: 0;
         transition: background 0.2s ease, color 0.2s ease;
     }
-    .hub-icon svg { width: 18px; height: 18px; }
+    .hub-icon svg { width: 22px; height: 22px; }
     /* Each card's icon background is a different green tint */
     .hub-grid > :nth-child(1) .hub-icon { background: #c9f2dc; }
     .hub-grid > :nth-child(2) .hub-icon { background: #e2f6c4; }
@@ -76,8 +76,8 @@
     .hub-grid > :nth-child(4) .hub-icon { background: #d9f0d2; }
     .hub-grid > :nth-child(5) .hub-icon { background: #bdeccc; }
     .hub-grid > :nth-child(6) .hub-icon { background: #eef9c9; }
-    .hub-card h2 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; color: var(--text-primary); margin: 0; }
-    .hub-card p { color: var(--text-secondary); font-size: 0.8rem; line-height: 1.4; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .hub-card h2 { font-size: 1.12rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; color: var(--text-primary); margin: 0; }
+    .hub-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.45; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* Linked cards behave like buttons */
     a.hub-card { cursor: pointer; }
@@ -86,7 +86,7 @@
     a.hub-card:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
     .hub-open {
         margin-top: auto;
-        font-size: 0.78rem;
+        font-size: 0.86rem;
         font-weight: 600;
         color: var(--accent);
     }
