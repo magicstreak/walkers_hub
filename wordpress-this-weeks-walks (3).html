@@ -1,7 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>This Week's Walks: Offline Demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { margin: 0; background: #f7f8f5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .demo-page { max-width: 920px; margin: 0 auto; padding: 16px 16px 40px; }
+    .demo-back { display: inline-block; margin: 4px 0 12px; color: #2d5b3e; font-weight: 600; text-decoration: none; }
+      /* Grade, distance and ascent sit on one line; cards are smaller, with four across on wide screens */
+    #wk-root .wk-fact-line { font-size: 0.8rem !important; color: #334155 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    #wk-root .wk-ic { color: #2d5b3e !important; display: inline-flex !important; align-items: center !important; vertical-align: -2px !important; margin-right: 2px !important; }
+    #wk-root .wk-sep { margin: 0 3px !important; color: #94a3b8 !important; }
+    @media (min-width: 1200px) {
+        #wk-root .wk-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+    }
+</style>
+</head>
+<body>
+<div class="demo-page">
+  <a class="demo-back" href="index.html">&larr; Back to the demo hub</a>
 <!-- CBMW This Week's Walks: paste the whole file into one WordPress "Custom HTML" block.
      Place it on the Walkers Hub page: the link opens the programme inside the hub, like the Walk Programme card. -->
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     /* Isolate from the WordPress theme: reset the properties themes most often override */
     #wk-root, #wk-root *, #wk-root *::before, #wk-root *::after,
     #wk-modal, #wk-modal *, #wk-levels, #wk-levels * {
@@ -56,7 +78,7 @@
     }
     #wk-root .wk-card:hover { box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.28) !important; }
     #wk-root .wk-card:focus-visible { outline: 2px solid var(--primary) !important; outline-offset: 3px !important; }
-    #wk-root .wk-img { position: relative !important; aspect-ratio: 3 / 2 !important; height: auto !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
+    #wk-root .wk-img { position: relative !important; aspect-ratio: 16 / 9 !important; height: auto !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
     #wk-root .wk-img svg { position: absolute !important; inset: 0 !important; margin: auto !important; width: 60px !important; height: 60px !important; opacity: 0.5 !important; }
     #wk-root .wk-img img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; border: 0 !important; margin: 0 !important; padding: 0 !important; }
     #wk-root .wk-card.wk-summer .wk-img { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
@@ -152,7 +174,7 @@
   </div>
   <div class="wk-grid" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
   <div class="wk-foot">
-    <a class="wk-link" href="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
+    <a class="wk-link" href="walk-scheduler.html?view=walker" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
   </div>
 </div>
 
@@ -183,9 +205,9 @@
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { initializeApp } from "./firebase-shim.js";
+  import { getAuth, signInAnonymously } from "./firebase-shim.js";
+  import { getDatabase, ref, onValue, get } from "./firebase-shim.js";
 
   // Same published databases as the walk scheduler (client config is public)
   const calendarConfig = {
@@ -311,11 +333,12 @@
     const d = weekDays().find((day) => dmy(day) === it.date);
     const when = d ? `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}` : it.date;
     const summer = it.kind === "summer";
-    const detailLines = [
-      summer ? "" : `<div class="wk-fact"><span class="wk-k">Grade:</span><span>${[it.grade, it.terrain, ...[it.scr, it.x].filter((v) => clean(v))].map(dash).join(" / ")}</span></div>`,
-      `<div class="wk-fact"><span class="wk-k">Distance:</span><span>${dash(it.distance)}</span></div>`,
-      `<div class="wk-fact"><span class="wk-k">Ascent:</span><span>${dash(it.ascent)}</span></div>`,
-    ].join("");
+    const factParts = [
+      summer ? null : `<span class="wk-k wk-ic" title="Grade" aria-label="Grade"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg></span> ${dash(it.grade)}`,
+      `<span class="wk-k wk-ic" title="Distance" aria-label="Distance"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h5"/></svg></span> ${dash(it.distance)}`,
+      `<span class="wk-k wk-ic" title="Ascent" aria-label="Ascent"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span> ${dash(it.ascent)}`,
+    ].filter(Boolean);
+    const detailLines = `<div class="wk-fact-line">${factParts.join('<span class="wk-sep">·</span>')}</div>`;
     const when_line = [when, clean(it.time), clean(it.duration)].filter(Boolean).join(" · ");
     function to12(t) {
       const m = /^(\d{1,2}):(\d{2})/.exec(String(t || "").trim());
@@ -504,7 +527,7 @@
       onValue(ref(calDb, "walk_bookings"), (s) => { bookings = s.val() || {}; loaded = true; render(); }, showError);
       onValue(ref(calDb, "social_events"), (s) => { socials = s.val() || {}; render(); }, showError);
       onValue(ref(walksDb, "walks"), (s) => { masters = s.val() || {}; render(); }, showError);
-      onValue(ref(walksDb, "leaders"), (s) => { leaders = s.val() || {}; }, () => {});
+      onValue(ref(calDb, "leaders"), (s) => { leaders = s.val() || {}; render(); }, () => {});
     });
   } catch (err) {
     showError();
@@ -512,3 +535,7 @@
   // Roll over to the new week at midnight without a reload
   setInterval(render, 15 * 60 * 1000);
 </script>
+
+</div>
+</body>
+</html>
