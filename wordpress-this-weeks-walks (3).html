@@ -46,6 +46,10 @@
     #wk-root .wk-head h2 { font-size: 1.5rem !important; font-weight: 700 !important; color: var(--primary) !important; }
     #wk-root .wk-range { color: var(--text-muted) !important; font-weight: 600 !important; font-size: 0.95rem !important; }
     #wk-root .wk-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px !important; }
+    #wk-root .wk-days { display: block !important; }
+    #wk-root .wk-day { margin: 0 0 22px !important; }
+    #wk-root .wk-day:last-child { margin-bottom: 0 !important; }
+    #wk-root .wk-day-head { margin: 0 0 10px !important; font-size: 1rem !important; font-weight: 700 !important; color: #2d5b3e !important; border-bottom: 1px solid #d6e2d9 !important; padding-bottom: 6px !important; }
     /* Card: image, title, description, meta row and a footer with a button (matches the listing style) */
     #wk-root .wk-card {
         display: flex !important; flex-direction: column !important; padding: 0 !important; overflow: hidden !important;
@@ -157,7 +161,7 @@
     <h2>This week's walks</h2>
     <p class="wk-range" id="wk-range"></p>
   </div>
-  <div class="wk-grid" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
+  <div class="wk-days" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
   <div class="wk-foot">
     <a class="wk-link" href="/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
   </div>
@@ -467,13 +471,23 @@
   function render() {
     const days = weekDays();
     const fmt = (d) => `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-    document.getElementById("wk-range").textContent = `Sunday to Saturday: ${fmt(days[0])} – ${fmt(days[6])}`;
+    document.getElementById("wk-range").textContent = `${fmt(days[0])} – ${fmt(days[6])}`;
     const grid = document.getElementById("wk-grid");
     if (!loaded) { grid.innerHTML = `<p class="wk-status">Loading this week's walks…</p>`; return; }
     items = collectItems();
-    grid.innerHTML = items.length
-      ? items.map(cardHtml).join("")
-      : `<p class="wk-status">No walks scheduled this week.</p>`;
+    if (!items.length) { grid.innerHTML = `<p class="wk-status">No walks scheduled this week.</p>`; return; }
+    // Group walks that fall on the same day under one heading
+    const groups = [];
+    items.forEach((it, i) => {
+      let g = groups.find((x) => x.date === it.date);
+      if (!g) { g = { date: it.date, idx: [] }; groups.push(g); }
+      g.idx.push(i);
+    });
+    grid.innerHTML = groups.map((g) => {
+      const day = weekDays().find((d) => dmy(d) === g.date);
+      const label = day ? day.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) : g.date;
+      return `<section class="wk-day"><h3 class="wk-day-head">${esc(label)}</h3><div class="wk-grid">${g.idx.map((i) => cardHtml(items[i], i)).join("")}</div></section>`;
+    }).join("");
   }
 
   function showError() {
