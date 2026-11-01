@@ -81,6 +81,7 @@
     #wk-root .wk-card:hover .wk-btn { background: #234a31 !important; }
     #wk-root .wk-status { color: var(--text-muted) !important; margin: 0 !important; }
     #wk-root .wk-foot { margin-top: 14px !important; text-align: center !important; }
+    #wk-root .wk-foot.wk-top { margin: 0 0 14px !important; }
     #wk-root .wk-link { display: inline-block !important; color: #2d5b3e !important; background: #fff !important; border: 2px solid #2d5b3e !important; border-radius: 8px !important; padding: 10px 22px !important; font-size: 0.95rem !important; font-weight: 700 !important; text-decoration: none !important; transition: background 0.15s, color 0.15s !important; }
     #wk-root .wk-link:hover, #wk-root .wk-link:focus-visible { background: #2d5b3e !important; color: #fff !important; }
 
@@ -161,10 +162,10 @@
     <h2>This week's walks</h2>
     <p class="wk-range" id="wk-range"></p>
   </div>
-  <div class="wk-days" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
-  <div class="wk-foot">
-    <a class="wk-link" href="/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
+  <div class="wk-foot wk-top">
+    <a class="wk-link" href="/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">View our full walking programme &rarr;</a>
   </div>
+  <div class="wk-days" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
 </div>
 
 <div class="wk-modal" id="wk-modal" role="dialog" aria-modal="true" aria-labelledby="wk-modal-title" style="display:none">
