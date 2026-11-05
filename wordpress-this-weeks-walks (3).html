@@ -1,11 +1,12 @@
 <!-- CBMW This Week's Walks: paste the whole file into one WordPress "Custom HTML" block.
      Place it on the Walkers Hub page: the link opens the programme inside the hub, like the Walk Programme card. -->
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     /* Isolate from the WordPress theme: reset the properties themes most often override */
     #wk-root, #wk-root *, #wk-root *::before, #wk-root *::after,
     #wk-modal, #wk-modal *, #wk-levels, #wk-levels * {
         box-sizing: border-box !important;
-        font-family: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
         letter-spacing: normal !important;
         word-spacing: normal !important;
         text-indent: 0 !important;
@@ -45,6 +46,10 @@
     #wk-root .wk-head h2 { font-size: 1.5rem !important; font-weight: 700 !important; color: var(--primary) !important; }
     #wk-root .wk-range { color: var(--text-muted) !important; font-weight: 600 !important; font-size: 0.95rem !important; }
     #wk-root .wk-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px !important; }
+    #wk-root .wk-days { display: block !important; }
+    #wk-root .wk-day { margin: 0 0 22px !important; }
+    #wk-root .wk-day:last-child { margin-bottom: 0 !important; }
+    #wk-root .wk-day-head { margin: 0 0 10px !important; font-size: 1rem !important; font-weight: 700 !important; color: #2d5b3e !important; border-bottom: 1px solid #d6e2d9 !important; padding-bottom: 6px !important; }
     /* Card: image, title, description, meta row and a footer with a button (matches the listing style) */
     #wk-root .wk-card {
         display: flex !important; flex-direction: column !important; padding: 0 !important; overflow: hidden !important;
@@ -55,27 +60,28 @@
     }
     #wk-root .wk-card:hover { box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.28) !important; }
     #wk-root .wk-card:focus-visible { outline: 2px solid var(--primary) !important; outline-offset: 3px !important; }
-    #wk-root .wk-img { position: relative !important; height: 170px !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
+    #wk-root .wk-img { position: relative !important; aspect-ratio: 16 / 9 !important; height: auto !important; flex: none !important; background: linear-gradient(135deg, #d9e7dd, #b7d5bf) !important; }
     #wk-root .wk-img svg { position: absolute !important; inset: 0 !important; margin: auto !important; width: 60px !important; height: 60px !important; opacity: 0.5 !important; }
     #wk-root .wk-img img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; border: 0 !important; margin: 0 !important; padding: 0 !important; }
     #wk-root .wk-card.wk-summer .wk-img { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; }
     #wk-root .wk-tag { position: absolute !important; top: 10px !important; left: 10px !important; background: #fffbeb !important; color: #713f12 !important; border-left: 5px solid #eab308 !important; font-size: 0.72rem !important; font-weight: 700 !important; padding: 3px 8px !important; border-radius: 4px !important; }
     #wk-root .wk-body { padding: 14px 16px 12px !important; flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 8px !important; border-bottom: 1px solid #e2e8f0 !important; }
-    #wk-root .wk-title { font-weight: 700 !important; font-size: 1.05rem !important; line-height: 1.3 !important; color: #1e293b !important; }
-    #wk-root .wk-desc { font-size: 0.9rem !important; line-height: 1.45 !important; color: #334155 !important; display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+    #wk-root .wk-title { font-weight: 600 !important; font-size: 1.05rem !important; line-height: 1.3 !important; color: #1e293b !important; }
+    #wk-root .wk-desc { font-size: 0.9rem !important; font-weight: 400 !important; line-height: 1.45 !important; color: #334155 !important; display: -webkit-box !important; -webkit-line-clamp: 3 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
     #wk-root .wk-desc strong { font-weight: 700 !important; color: #1e293b !important; }
     #wk-root .wk-meta { margin-top: auto !important; padding-top: 4px !important; font-size: 0.82rem !important; color: #64748b !important; font-weight: 600 !important; }
-    #wk-root .wk-foot-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; padding: 12px 16px !important; }
-    #wk-root .wk-lbl { display: block !important; font-size: 0.72rem !important; font-weight: 700 !important; color: #475569 !important; margin: 0 0 2px !important; }
+    #wk-root .wk-foot-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; padding: 12px 16px !important; background: #e6ede8 !important; }
+    #wk-root .wk-lbl { display: block !important; font-size: 0.72rem !important; font-weight: 700 !important; color: #334155 !important; margin: 0 0 2px !important; }
     #wk-root .wk-val { display: block !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #1e293b !important; }
     #wk-root .wk-btn { flex: none !important; background: #2d5b3e !important; color: #fff !important; border-radius: 4px !important; padding: 10px 16px !important; font-size: 0.82rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.03em !important; }
     #wk-root .wk-facts { margin-top: auto !important; padding-top: 6px !important; }
-    #wk-root .wk-fact { display: grid !important; grid-template-columns: 84px 1fr !important; column-gap: 6px !important; margin: 0 !important; font-size: 0.85rem !important; line-height: 1.5 !important; color: #334155 !important; }
-    #wk-root .wk-k { font-weight: 700 !important; color: #1e293b !important; }
-    #wk-root .wk-when-line { font-size: 0.98rem !important; font-weight: 700 !important; color: #1e293b !important; background: #f1f5f9 !important; border-radius: 6px !important; padding: 5px 10px !important; }
+    #wk-root .wk-fact { display: grid !important; grid-template-columns: 84px 1fr !important; column-gap: 6px !important; margin: 0 !important; font-size: 0.9rem !important; font-weight: 400 !important; line-height: 1.5 !important; color: #334155 !important; }
+    #wk-root .wk-k { font-weight: 600 !important; color: #334155 !important; }
+    #wk-root .wk-when-line { font-size: 0.9rem !important; font-weight: 500 !important; color: #334155 !important; background: none !important; border-radius: 0 !important; padding: 0 !important; }
     #wk-root .wk-card:hover .wk-btn { background: #234a31 !important; }
     #wk-root .wk-status { color: var(--text-muted) !important; margin: 0 !important; }
     #wk-root .wk-foot { margin-top: 14px !important; text-align: center !important; }
+    #wk-root .wk-foot.wk-top { margin: 0 0 14px !important; }
     #wk-root .wk-link { display: inline-block !important; color: #2d5b3e !important; background: #fff !important; border: 2px solid #2d5b3e !important; border-radius: 8px !important; padding: 10px 22px !important; font-size: 0.95rem !important; font-weight: 700 !important; text-decoration: none !important; transition: background 0.15s, color 0.15s !important; }
     #wk-root .wk-link:hover, #wk-root .wk-link:focus-visible { background: #2d5b3e !important; color: #fff !important; }
 
@@ -113,10 +119,41 @@
     #wk-levels p { margin: 0 0 8px !important; color: #1f2937 !important; font-size: 0.92rem !important; }
     #wk-levels .wk-levels-close { position: absolute !important; top: 16px !important; right: 18px !important; background: #fff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 6px 12px !important; font-size: 0.85rem !important; font-weight: 600 !important; color: #1e293b !important; cursor: pointer !important; }
 
+
+    /* Layout by screen width: 3 across on PCs (smaller cards), 2 on tablets, compact cards on phones */
+    @media (min-width: 900px) {
+        #wk-root .wk-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
+        #wk-root .wk-img img { object-fit: cover !important; object-position: center !important; }
+        #wk-root .wk-tag { top: 6px !important; left: 6px !important; }
+        #wk-root .wk-body { padding: 8px 10px 7px !important; gap: 4px !important; }
+        #wk-root .wk-title { font-size: 0.9rem !important; line-height: 1.25 !important; }
+        #wk-root .wk-desc { font-size: 0.78rem !important; line-height: 1.35 !important; -webkit-line-clamp: 2 !important; }
+        #wk-root .wk-fact { font-size: 0.78rem !important; line-height: 1.35 !important; grid-template-columns: 70px 1fr !important; }
+        #wk-root .wk-meta { font-size: 0.74rem !important; }
+        #wk-root .wk-foot-row { padding: 7px 10px !important; }
+        #wk-root .wk-btn { padding: 6px 10px !important; font-size: 0.75rem !important; }
+    }
+    @media (min-width: 561px) and (max-width: 899px) {
+        #wk-root .wk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    }
+    @media (max-width: 560px) {
+        #wk-root .wk-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+        #wk-root .wk-body { padding: 12px 14px 10px !important; }
+        #wk-root .wk-desc { -webkit-line-clamp: 2 !important; }
+        #wk-root .wk-foot-row { padding: 10px 14px !important; }
+    }
+
     @media (max-width: 560px) {
         #wk-root .wk-head h2 { font-size: 1.3rem !important; }
         #wk-root .wk-grid { grid-template-columns: 1fr !important; }
         #wk-modal .wk-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    }
+    /* Grade, distance and ascent sit on one line; cards are smaller, with four across on wide screens */
+    #wk-root .wk-fact-line { font-size: 0.8rem !important; color: #334155 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    #wk-root .wk-ic { color: #2d5b3e !important; display: inline-flex !important; align-items: center !important; vertical-align: -2px !important; margin-right: 2px !important; }
+    #wk-root .wk-sep { margin: 0 3px !important; color: #94a3b8 !important; }
+    @media (min-width: 1200px) {
+        #wk-root .wk-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
     }
 </style>
 
@@ -125,10 +162,10 @@
     <h2>This week's walks</h2>
     <p class="wk-range" id="wk-range"></p>
   </div>
-  <div class="wk-grid" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
-  <div class="wk-foot">
-    <a class="wk-link" href="https://magicstreak.github.io/CBMW-walk-scheduler/?view=walker" target="_blank" rel="noopener noreferrer">Open the full walk programme &rarr;</a>
+  <div class="wk-foot wk-top">
+    <a class="wk-link" href="/come-walking/?view=programme-scheduler" target="_blank" rel="noopener noreferrer">View our full walking programme &rarr;</a>
   </div>
+  <div class="wk-days" id="wk-grid"><p class="wk-status">Loading this week's walks…</p></div>
 </div>
 
 <div class="wk-modal" id="wk-modal" role="dialog" aria-modal="true" aria-labelledby="wk-modal-title" style="display:none">
@@ -286,12 +323,19 @@
     const d = weekDays().find((day) => dmy(day) === it.date);
     const when = d ? `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}` : it.date;
     const summer = it.kind === "summer";
-    const detailLines = [
-      summer ? "" : `<div class="wk-fact"><span class="wk-k">Grade:</span><span>${[it.grade, it.terrain, ...[it.scr, it.x].filter((v) => clean(v))].map(dash).join(" / ")}</span></div>`,
-      `<div class="wk-fact"><span class="wk-k">Distance:</span><span>${dash(it.distance)}</span></div>`,
-      `<div class="wk-fact"><span class="wk-k">Ascent:</span><span>${dash(it.ascent)}</span></div>`,
-    ].join("");
+    const factParts = [
+      summer ? null : `<span class="wk-k wk-ic" title="Grade" aria-label="Grade"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg></span> ${dash(it.grade)}`,
+      `<span class="wk-k wk-ic" title="Distance" aria-label="Distance"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h5"/></svg></span> ${dash(it.distance)}`,
+      `<span class="wk-k wk-ic" title="Ascent" aria-label="Ascent"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span> ${dash(it.ascent)}`,
+    ].filter(Boolean);
+    const detailLines = `<div class="wk-fact-line">${factParts.join('<span class="wk-sep">·</span>')}</div>`;
     const when_line = [when, clean(it.time), clean(it.duration)].filter(Boolean).join(" · ");
+    function to12(t) {
+      const m = /^(\d{1,2}):(\d{2})/.exec(String(t || "").trim());
+      if (!m) return clean(t);
+      const h = Number(m[1]);
+      return `${h % 12 === 0 ? 12 : h % 12}:${m[2]} ${h < 12 ? "am" : "pm"}`;
+    }
     return `<button type="button" class="wk-card${summer ? " wk-summer" : ""}" data-idx="${idx}">
       <div class="wk-img">
         ${it.image
@@ -305,7 +349,7 @@
         <div class="wk-facts">${detailLines}</div>
       </div>
       <div class="wk-foot-row">
-        <span class="wk-when-line">${esc(when_line)}</span>
+        <span class="wk-when-line">${[when, to12(it.time), clean(it.duration)].filter(Boolean).map(esc).join("<br>")}</span>
         <span class="wk-btn">See details</span>
       </div>
     </button>`;
@@ -427,14 +471,24 @@
 
   function render() {
     const days = weekDays();
-    const fmt = (d) => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    const fmt = (d) => `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
     document.getElementById("wk-range").textContent = `${fmt(days[0])} – ${fmt(days[6])}`;
     const grid = document.getElementById("wk-grid");
     if (!loaded) { grid.innerHTML = `<p class="wk-status">Loading this week's walks…</p>`; return; }
     items = collectItems();
-    grid.innerHTML = items.length
-      ? items.map(cardHtml).join("")
-      : `<p class="wk-status">No walks scheduled this week.</p>`;
+    if (!items.length) { grid.innerHTML = `<p class="wk-status">No walks scheduled this week.</p>`; return; }
+    // Group walks that fall on the same day under one heading
+    const groups = [];
+    items.forEach((it, i) => {
+      let g = groups.find((x) => x.date === it.date);
+      if (!g) { g = { date: it.date, idx: [] }; groups.push(g); }
+      g.idx.push(i);
+    });
+    grid.innerHTML = groups.map((g) => {
+      const day = weekDays().find((d) => dmy(d) === g.date);
+      const label = day ? day.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) : g.date;
+      return `<section class="wk-day"><h3 class="wk-day-head">${esc(label)}</h3><div class="wk-grid">${g.idx.map((i) => cardHtml(items[i], i)).join("")}</div></section>`;
+    }).join("");
   }
 
   function showError() {
